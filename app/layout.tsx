@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Refined Spaces | Premium Collection",
+  title: "Декоративни гипсени цигли | Zmaga Cigli",
   description: "Architecture and design, curated.",
 };
 
