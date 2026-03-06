@@ -23,6 +23,7 @@ export default function ImageCard({ src, alt, onClick }: ImageCardProps) {
         src={src}
         alt={alt}
         fill
+        loading="eager"
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         className="object-cover brightness-90 transition-[transform,filter] duration-700 ease-out group-hover:scale-[1.05] group-hover:brightness-100"
       />
