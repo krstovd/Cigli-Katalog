@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Deep, soft charcoal base – premium but not harsh */
+  --background: #050608;
+  --foreground: #fafafa;
+  --muted: #71717a;
+  --border: #27272a;
 }
 
 @theme inline {
@@ -12,15 +15,17 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* scroll-behavior is handled by Lenis — no native override needed */
 
 body {
-  background: var(--background);
+  /* Atmospheric: subtle radial glow from top-centre fades into dark base */
+  background:
+    radial-gradient(ellipse 90% 45% at 50% 0%, #323236 0%, transparent 68%),
+    linear-gradient(to bottom, #27272a 0%, #232329 100%);
+  min-height: 100vh;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
 }
