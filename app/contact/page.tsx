@@ -319,7 +319,7 @@ export default function ContactPage() {
                   </a>
                   <span className="-translate-y-1.5 ml-3 flex shrink-0 items-center gap-2">
                     <a
-                      href={`viber://chat?number=${PHONE_E164}`}
+                      href={`viber://add?number=${PHONE_E164}`}
                       className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#2a2a2a] transition-colors hover:bg-[#3a3a3a]"
                       aria-label="Viber"
                       title={t.viberTitle}
