@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
 import ScrollToTop from "./components/ScrollToTop";
+import Navbar from "./components/Navbar";
+import { LangProvider } from "./context/LangContext";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -15,6 +17,12 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   title: "Декоративни гипсени цигли | Zmaga Cigli",
@@ -42,10 +50,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen overflow-x-hidden antialiased`}
       >
-        <SmoothScroll>{children}</SmoothScroll>
-        <ScrollToTop />
+        <LangProvider>
+          <SmoothScroll>
+            <Navbar />
+            {children}
+          </SmoothScroll>
+          <ScrollToTop />
+        </LangProvider>
         <Analytics />
         <SpeedInsights />
       </body>

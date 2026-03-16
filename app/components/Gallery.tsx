@@ -2,8 +2,15 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLang } from "@/app/context/LangContext";
+import type { Lang } from "@/app/context/LangContext";
 import ImageCard from "./ImageCard";
 import ImageModal from "./ImageModal";
+
+const SECTION_TITLE: Record<Lang, string> = {
+  mk: "Нашите модели",
+  en: "Our models",
+};
 
 const container = {
   hidden: { opacity: 0 },
@@ -30,12 +37,13 @@ function altFromPath(path: string): string {
 }
 
 export default function Gallery({ images }: GalleryProps) {
+  const { lang } = useLang();
   const [selected, setSelected] = useState<string | null>(null);
   const onClose = useCallback(() => setSelected(null), []);
 
   return (
     <>
-      <section className="relative px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:px-10 md:pt-10 lg:px-14">
+      <section id="catalog" className="relative min-w-0 px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:px-10 md:pt-10 lg:px-14">
         {/* Subtle glass glow behind the grid */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-zinc-800/20 to-transparent" />
         {/* Section divider */}
@@ -48,8 +56,19 @@ export default function Gallery({ images }: GalleryProps) {
           style={{ originX: 0 }}
         />
 
+        {/* Section title */}
+        <motion.h2
+          className="mx-auto mb-8 max-w-7xl text-center text-[10px] font-medium uppercase tracking-[0.35em] text-zinc-500 md:mb-10"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {SECTION_TITLE[lang]}
+        </motion.h2>
+
         <motion.div
-          className="mx-auto grid max-w-7xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
+          className="mx-auto grid min-w-0 max-w-7xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
           variants={container}
           initial="hidden"
           whileInView="show"

@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-
-type Lang = "mk" | "en";
+import { useLang } from "@/app/context/LangContext";
+import type { Lang } from "@/app/context/LangContext";
 
 const HERO_CONTENT: Record<
   Lang,
@@ -23,62 +21,30 @@ const HERO_CONTENT: Record<
 };
 
 export default function Hero() {
-  const [lang, setLang] = useState<Lang>("mk");
+  const { lang } = useLang();
   const content = HERO_CONTENT[lang];
 
   return (
     <motion.header
-      className="relative flex min-h-[60vh] flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-zinc-900/80 via-transparent to-transparent px-6 pt-28 pb-14 text-center md:min-h-[75vh] md:py-36"
+      className="relative flex min-h-[60vh] flex-col items-center justify-center overflow-hidden px-4 pt-20 pb-14 text-center sm:px-6 md:min-h-[75vh] md:pt-28 md:pb-20"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      {/* Top bar slides down from above */}
-      <motion.div
-        className="absolute inset-x-6 top-7 z-10 flex items-center justify-between md:inset-x-10"
-        initial={{ opacity: 0, y: -14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="flex items-center transition-opacity duration-300 hover:opacity-100 opacity-80">
-          <Image
-            src="/images/zmaga logo.webp"
-            alt="Zmaga logo"
-            width={120}
-            height={32}
-            className="h-auto w-9 rounded-lg object-contain drop-shadow-sm sm:w-10 md:w-12"
-            priority
-          />
-        </div>
-        <nav
-          className="flex items-center gap-0.5 rounded-md bg-black/35 px-0.5 py-0.5 shadow-sm shadow-black/20 backdrop-blur-sm"
-          aria-label="Language"
-        >
-          <button
-            type="button"
-            onClick={() => setLang("mk")}
-            className="min-h-[20px] min-w-[20px] rounded px-1.5 py-1 text-[9px] uppercase tracking-[0.15em] text-zinc-600 transition-all duration-200 hover:text-zinc-300 focus:outline-none data-[active=true]:text-zinc-200"
-            data-active={lang === "mk"}
-          >
-            MK
-          </button>
-          <span className="select-none text-[9px] text-zinc-700" aria-hidden>·</span>
-          <button
-            type="button"
-            onClick={() => setLang("en")}
-            className="min-h-[28px] min-w-[28px] rounded px-1.5 py-1 text-[9px] uppercase tracking-[0.15em] text-zinc-600 transition-all duration-200 hover:text-zinc-300 focus:outline-none data-[active=true]:text-zinc-200"
-            data-active={lang === "en"}
-          >
-            EN
-          </button>
-        </nav>
-      </motion.div>
-
+      {/* Modern gradient background */}
+      <div
+        className="absolute inset-0 -z-10"
+        aria-hidden
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 50% at 50% 20%, rgba(63,63,70,0.4) 0%, transparent 50%), linear-gradient(to bottom, rgba(24,24,27,0.95) 0%, transparent 40%, transparent 70%, rgba(39,39,42,0.3) 100%)",
+        }}
+      />
       {/* Text block — scroll reveal + language switch */}
       <AnimatePresence mode="wait">
         <motion.div
           key={lang}
-          className="max-w-2xl space-y-6 lg:max-w-3xl"
+          className="w-full min-w-0 max-w-2xl space-y-6 px-1 lg:max-w-3xl"
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -14 }}
@@ -94,7 +60,7 @@ export default function Hero() {
               transition={{ duration: 1.0, delay: 0.25, ease: "easeOut" }}
               style={{ originX: 0.5 }}
             />
-            <p className="text-[10px] font-medium uppercase tracking-[0.5em] text-zinc-500">
+            <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-zinc-500 sm:tracking-[0.5em]">
               {content.label}
             </p>
           </div>
@@ -104,7 +70,7 @@ export default function Hero() {
           </h1>
 
           <div className="flex flex-col items-center gap-5">
-            <p className="text-sm uppercase tracking-[0.3em] text-zinc-500 sm:text-base">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 sm:text-base sm:tracking-[0.3em]">
               {content.tagline}
             </p>
             <motion.div

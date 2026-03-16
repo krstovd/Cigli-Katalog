@@ -10,7 +10,7 @@ type ImageCardProps = {
 
 export default function ImageCard({ src, alt, onClick }: ImageCardProps) {
   return (
-    <div className="group relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-2xl bg-zinc-900 shadow-lg shadow-black/40 ring-1 ring-white/0 transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-black/60 hover:ring-white/10">
+    <div className="group relative aspect-[4/3] min-w-0 w-full cursor-pointer overflow-hidden rounded-2xl bg-zinc-900 shadow-lg shadow-black/40 ring-1 ring-white/0 transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-black/60 hover:ring-white/10">
       <button
         type="button"
         className="absolute inset-0 z-10 h-full w-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white/25"
