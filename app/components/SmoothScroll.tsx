@@ -18,15 +18,19 @@ export default function SmoothScroll({
     });
 
     setLenis(lenis);
+    let rafId = 0;
+    let isRunning = true;
 
     function raf(time: number) {
+      if (!isRunning) return;
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    const rafId = requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      isRunning = false;
       cancelAnimationFrame(rafId);
       lenis.destroy();
       setLenis(null);
