@@ -66,6 +66,7 @@ export default function ImageModal({ src, alt, onClose }: ImageModalProps) {
           alt={alt}
           width={1200}
           height={900}
+          sizes="90vw"
           className="max-h-[90vh] w-auto rounded-xl object-contain shadow-2xl"
         />
 

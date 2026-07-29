@@ -10,6 +10,12 @@ export function scrollToTop(): void {
   if (instance) {
     instance.scrollTo(0, { duration: 1.4 });
   } else {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    window.scrollTo({
+      top: 0,
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
   }
 }

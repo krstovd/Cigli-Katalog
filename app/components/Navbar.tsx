@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,6 +29,19 @@ export default function Navbar() {
   const pathname = usePathname();
   const links = NAV_LINKS[lang];
 
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
+
   function isActive(href: string) {
     if (href === "/#catalog") return pathname === "/";
     return pathname === href;
@@ -41,7 +54,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center opacity-80 transition-opacity duration-300 hover:opacity-100"
+          className="flex items-center rounded-lg opacity-80 transition-opacity duration-300 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
           aria-label="Zmaga Cigli – Почетна"
         >
           <Image
@@ -60,7 +73,8 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-[9px] uppercase tracking-[0.2em] transition-colors duration-200 ${
+              aria-current={isActive(link.href) ? "page" : undefined}
+              className={`rounded px-1 py-2 text-[9px] uppercase tracking-[0.2em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 ${
                 isActive(link.href)
                   ? "text-zinc-200"
                   : "text-zinc-500 hover:text-zinc-300"
@@ -75,15 +89,17 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
 
           {/* Language toggle */}
-          <nav
+          <div
             className="flex items-center gap-0.5 rounded-md bg-black/35 px-0.5 py-0.5 shadow-sm shadow-black/20 backdrop-blur-sm"
+            role="group"
             aria-label="Language"
           >
             <button
               type="button"
               onClick={() => setLang("mk")}
               aria-pressed={lang === "mk"}
-              className="min-h-[20px] min-w-[20px] rounded px-1.5 py-1 text-[9px] uppercase tracking-[0.15em] text-zinc-600 transition-all duration-200 hover:text-zinc-300 focus:outline-none data-[active=true]:text-zinc-200"
+              aria-label="Македонски"
+              className="min-h-8 min-w-8 rounded px-1.5 py-1 text-[9px] uppercase tracking-[0.15em] text-zinc-600 transition-all duration-200 hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 data-[active=true]:text-zinc-200"
               data-active={lang === "mk"}
             >
               MK
@@ -93,20 +109,22 @@ export default function Navbar() {
               type="button"
               onClick={() => setLang("en")}
               aria-pressed={lang === "en"}
-              className="min-h-[20px] min-w-[20px] rounded px-1.5 py-1 text-[9px] uppercase tracking-[0.15em] text-zinc-600 transition-all duration-200 hover:text-zinc-300 focus:outline-none data-[active=true]:text-zinc-200"
+              aria-label="English"
+              className="min-h-8 min-w-8 rounded px-1.5 py-1 text-[9px] uppercase tracking-[0.15em] text-zinc-600 transition-all duration-200 hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 data-[active=true]:text-zinc-200"
               data-active={lang === "en"}
             >
               EN
             </button>
-          </nav>
+          </div>
 
           {/* Hamburger — mobile only */}
           <button
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none md:hidden"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 md:hidden"
             aria-label={menuOpen ? "Затвори мени" : "Отвори мени"}
             aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
           >
             <svg
               className="h-4 w-4"
@@ -130,6 +148,7 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            id="mobile-navigation"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -142,7 +161,8 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`border-b border-zinc-800/40 py-3.5 text-[10px] uppercase tracking-[0.2em] transition-colors duration-200 last:border-0 ${
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  className={`border-b border-zinc-800/40 py-3.5 text-[10px] uppercase tracking-[0.2em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/40 last:border-0 ${
                     isActive(link.href)
                       ? "text-zinc-200"
                       : "text-zinc-500 hover:text-zinc-300"
