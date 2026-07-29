@@ -1,16 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Cormorant_Garamond, Jost } from "next/font/google";
 import Footer from "@/app/components/Footer";
 import { useLang } from "@/app/context/LangContext";
 import type { Lang } from "@/app/context/LangContext";
-
-const cormorant = Cormorant_Garamond({
-  weight: ["300", "400", "600"],
-  subsets: ["latin"],
-});
-const jost = Jost({ weight: ["400", "500"], subsets: ["latin"] });
 
 interface FormData {
   firstName: string;
@@ -66,6 +59,8 @@ const CONTACT_CONTENT: Record<
     formSuccessDesc: string;
     formNewMessage: string;
     formError: string;
+    formRateLimit: string;
+    messageCount: (current: number, maximum: number) => string;
     openMap: string;
     workingHours: string;
     open: string;
@@ -98,6 +93,9 @@ const CONTACT_CONTENT: Record<
     formSuccessDesc: "Ќе ве контактираме наскоро.",
     formNewMessage: "Нова порака",
     formError: "Грешка при испраќање. Обидете се повторно.",
+    formRateLimit:
+      "Испративте премногу пораки. Обидете се повторно за неколку минути.",
+    messageCount: (current, maximum) => `${current} / ${maximum} знаци`,
     openMap: "Отвори карта",
     workingHours: "Работно време",
     open: "отворено",
@@ -129,6 +127,9 @@ const CONTACT_CONTENT: Record<
     formSuccessDesc: "We will contact you soon.",
     formNewMessage: "New message",
     formError: "Error sending. Please try again.",
+    formRateLimit:
+      "Too many messages were sent. Please try again in a few minutes.",
+    messageCount: (current, maximum) => `${current} / ${maximum} characters`,
     openMap: "Open map",
     workingHours: "Working hours",
     open: "open",
@@ -308,7 +309,18 @@ export default function ContactPage() {
         body: JSON.stringify({ ...formData, startedAt: formStartedAt }),
       });
       if (!res.ok) {
-        throw new Error(t.formError);
+        let errorCode = "";
+        try {
+          const responseBody = (await res.json()) as { error?: string };
+          errorCode = responseBody.error ?? "";
+        } catch {
+          // Use the generic localized message for an unreadable response.
+        }
+        throw new Error(
+          res.status === 429 || errorCode === "TOO_MANY_REQUESTS"
+            ? t.formRateLimit
+            : t.formError
+        );
       }
       setSubmitted(true);
     } catch (err) {
@@ -332,7 +344,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className={`${jost.className} min-h-screen overflow-x-hidden text-white`}>
+    <div className="min-h-screen overflow-x-hidden text-white">
       <main className="overflow-x-hidden px-4 pb-0 pt-28 sm:px-6 md:px-10 md:pt-36 lg:px-16">
         <div className="mx-auto max-w-4xl space-y-12 lg:space-y-16">
           {/* Hero */}
@@ -340,7 +352,7 @@ export default function ContactPage() {
             <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#9ca3af] sm:tracking-[0.5em]">
               {t.heroLabel}
             </p>
-            <h1 className={`${cormorant.className} mt-4 text-3xl font-extralight tracking-wide text-white sm:text-4xl md:text-5xl`}>
+            <h1 className="mt-4 font-serif text-3xl font-light tracking-wide text-white sm:text-4xl md:text-5xl">
               {t.heroTitle}
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-sm text-[#9ca3af] sm:text-base">
@@ -428,9 +440,13 @@ export default function ContactPage() {
           {/* Contact Form */}
           <section className="rounded-2xl border border-[#3a3a3a] bg-[#2a2a2a] p-6 sm:p-8 md:p-10">
             {submitted ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div
+                className="flex flex-col items-center justify-center py-12 text-center"
+                role="status"
+                aria-live="polite"
+              >
                 <IconCheck />
-                <h2 className={`${cormorant.className} mt-6 text-2xl font-light text-white sm:text-3xl`}>
+                <h2 className="mt-6 font-serif text-2xl font-light text-white sm:text-3xl">
                   {t.formSuccess}
                 </h2>
                 <p className="mt-2 text-sm text-[#9ca3af]">
@@ -445,7 +461,11 @@ export default function ContactPage() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-5"
+                aria-busy={loading}
+              >
                 <div
                   className="pointer-events-none absolute -left-[10000px] h-px w-px overflow-hidden"
                   aria-hidden="true"
@@ -529,7 +549,11 @@ export default function ContactPage() {
                     className="w-full rounded-lg border border-[#3a3a3a] bg-[#1e1e1e] px-4 py-2.5 text-white focus:border-[#525252] focus:outline-none focus:ring-1 focus:ring-[#525252]"
                   >
                     {topicOptions.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
+                      <option
+                        key={opt.value}
+                        value={opt.value}
+                        disabled={opt.value === ""}
+                      >
                         {opt.label}
                       </option>
                     ))}
@@ -547,13 +571,23 @@ export default function ContactPage() {
                     required
                     minLength={10}
                     maxLength={3000}
+                    aria-describedby="message-count"
                     rows={5}
                     className="w-full resize-y rounded-lg border border-[#3a3a3a] bg-[#1e1e1e] px-4 py-2.5 text-white placeholder:text-[#9ca3af]/60 focus:border-[#525252] focus:outline-none focus:ring-1 focus:ring-[#525252]"
                     placeholder={t.formPlaceholderMessage}
                   />
+                  <p
+                    id="message-count"
+                    className="mt-1.5 text-right text-[10px] tracking-wide text-[#9ca3af]"
+                  >
+                    {t.messageCount(formData.message.length, 3000)}
+                  </p>
                 </div>
                 {error && (
-                  <p className="rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-2 text-sm text-red-400">
+                  <p
+                    className="rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-2 text-sm text-red-400"
+                    role="alert"
+                  >
                     {error}
                   </p>
                 )}
@@ -594,7 +628,7 @@ export default function ContactPage() {
 
           {/* Working Hours */}
           <section className="rounded-2xl border border-[#3a3a3a] bg-[#2a2a2a] p-6 sm:p-8">
-            <h2 className={`${cormorant.className} mb-6 text-xl font-light text-white`}>{t.workingHours}</h2>
+            <h2 className="mb-6 font-serif text-xl font-light text-white">{t.workingHours}</h2>
             <div className="divide-y divide-[#3a3a3a]">
               <div className="flex flex-wrap items-center justify-between gap-2 py-4">
                 <span className="text-sm text-white">{t.weekdays}</span>

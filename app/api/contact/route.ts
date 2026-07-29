@@ -1,24 +1,13 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
-
-const TOPIC_LABELS: Record<string, string> = {
-  product: "Барање за производ",
-  order: "Набавка / нарачка",
-  technical: "Технички прашања",
-  collaboration: "Соработка",
-  other: "Друго",
-};
-
-const LIMITS = {
-  name: 60,
-  email: 254,
-  message: 3000,
-} as const;
+import {
+  escapeHtml,
+  parseContactPayload,
+  TOPIC_LABELS,
+} from "@/lib/contact-validation";
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
-const MIN_FORM_COMPLETION_MS = 1_500;
-const MAX_FORM_AGE_MS = 2 * 60 * 60 * 1000;
 
 type RateLimitEntry = {
   count: number;
@@ -27,24 +16,13 @@ type RateLimitEntry = {
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function isStringWithinLimit(
-  value: unknown,
-  minLength: number,
-  maxLength: number
-): value is string {
-  const length = typeof value === "string" ? value.trim().length : 0;
-  return (
-    typeof value === "string" &&
-    length >= minLength &&
-    length <= maxLength
-  );
-}
-
 function getClientIp(request: Request): string {
   const forwardedFor = request.headers.get("x-forwarded-for");
-  return forwardedFor?.split(",")[0]?.trim() || "unknown";
+  return (
+    forwardedFor?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip")?.trim() ||
+    "unknown"
+  );
 }
 
 function isRateLimited(identifier: string, now: number): boolean {
@@ -72,20 +50,6 @@ function cleanExpiredRateLimits(now: number): void {
   }
 }
 
-function escapeHtml(value: string): string {
-  return value.replace(
-    /[&<>"']/g,
-    (character) =>
-      ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;",
-      })[character] ?? character
-  );
-}
-
 function badRequest() {
   return NextResponse.json({ error: "INVALID_FORM_DATA" }, { status: 400 });
 }
@@ -110,33 +74,12 @@ export async function POST(request: Request) {
       return badRequest();
     }
 
-    const body: unknown = await request.json();
-    if (!body || typeof body !== "object" || Array.isArray(body)) {
+    const payload = parseContactPayload(await request.json(), now);
+    if (!payload) {
       return badRequest();
     }
 
-    const { firstName, lastName, email, topic, message, website, startedAt } =
-      body as Record<string, unknown>;
-
-    const completionTime =
-      typeof startedAt === "number" ? now - startedAt : Number.NaN;
-
-    if (
-      website !== "" ||
-      !Number.isFinite(completionTime) ||
-      completionTime < MIN_FORM_COMPLETION_MS ||
-      completionTime > MAX_FORM_AGE_MS ||
-      !isStringWithinLimit(firstName, 2, LIMITS.name) ||
-      !isStringWithinLimit(lastName, 2, LIMITS.name) ||
-      !isStringWithinLimit(email, 3, LIMITS.email) ||
-      !EMAIL_PATTERN.test(email.trim()) ||
-      typeof topic !== "string" ||
-      !(topic in TOPIC_LABELS) ||
-      !isStringWithinLimit(message, 10, LIMITS.message)
-    ) {
-      return badRequest();
-    }
-
+    const { firstName, lastName, email, topic, message } = payload;
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
       console.error("Contact form is unavailable: RESEND_API_KEY is missing.");
@@ -146,11 +89,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const safeFirstName = escapeHtml(firstName.trim());
-    const safeLastName = escapeHtml(lastName.trim());
-    const safeEmail = escapeHtml(email.trim());
-    const safeMessage = escapeHtml(message.trim()).replace(/\r?\n/g, "<br>");
+    const safeFirstName = escapeHtml(firstName);
+    const safeLastName = escapeHtml(lastName);
+    const safeEmail = escapeHtml(email);
+    const safeMessage = escapeHtml(message).replace(/\r?\n/g, "<br>");
     const topicLabel = TOPIC_LABELS[topic];
+    const fromEmail =
+      process.env.RESEND_FROM_EMAIL ||
+      "Zmaga Cigli <onboarding@resend.dev>";
+    const contactEmail =
+      process.env.CONTACT_EMAIL || "zmaga.dooel@yahoo.com";
 
     const html = `
       <h2>Нова порака од контакт форма</h2>
@@ -160,14 +108,25 @@ export async function POST(request: Request) {
       <p><strong>Порака:</strong></p>
       <p>${safeMessage}</p>
     `;
+    const text = [
+      "Нова порака од контакт форма",
+      "",
+      `Име: ${firstName} ${lastName}`,
+      `Е-пошта: ${email}`,
+      `Тема: ${topicLabel}`,
+      "",
+      "Порака:",
+      message,
+    ].join("\n");
 
     const resend = new Resend(apiKey);
-    const { data, error } = await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: process.env.CONTACT_EMAIL || "zmaga.dooel@yahoo.com",
-      replyTo: email.trim(),
-      subject: `Контакт: ${topicLabel} - ${firstName.trim()} ${lastName.trim()}`,
+    const { error } = await resend.emails.send({
+      from: fromEmail,
+      to: contactEmail,
+      replyTo: email,
+      subject: `Контакт: ${topicLabel} - ${firstName} ${lastName}`,
       html,
+      text,
     });
 
     if (error) {
@@ -178,7 +137,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ success: true, id: data?.id });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Contact form request failed:", error);
     return NextResponse.json(
