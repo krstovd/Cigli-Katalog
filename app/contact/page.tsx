@@ -18,6 +18,7 @@ interface FormData {
   email: string;
   topic: string;
   message: string;
+  website: string;
 }
 
 const TOPIC_OPTIONS: Record<Lang, { value: string; label: string }[]> = {
@@ -209,10 +210,19 @@ function IconWhatsApp() {
 }
 
 function isWithinWorkingHours(): boolean {
-  const now = new Date();
-  const day = now.getDay();
-  const hour = now.getHours();
-  const minute = now.getMinutes();
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Skopje",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(
+    values.weekday
+  );
+  const hour = Number(values.hour);
+  const minute = Number(values.minute);
   const timeMins = hour * 60 + minute;
 
   if (day === 0 || day === 6) return timeMins >= 540 && timeMins < 1020;
@@ -226,7 +236,11 @@ export default function ContactPage() {
   const [isOpen, setIsOpen] = useState<boolean | null>(null);
 
   useEffect(() => {
-    setIsOpen(isWithinWorkingHours());
+    const updateOpenStatus = () => setIsOpen(isWithinWorkingHours());
+    updateOpenStatus();
+    const intervalId = window.setInterval(updateOpenStatus, 60_000);
+
+    return () => window.clearInterval(intervalId);
   }, []);
 
   const [formData, setFormData] = useState<FormData>({
@@ -235,7 +249,9 @@ export default function ContactPage() {
     email: "",
     topic: "",
     message: "",
+    website: "",
   });
+  const [formStartedAt, setFormStartedAt] = useState(() => Date.now());
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -254,11 +270,10 @@ export default function ContactPage() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, startedAt: formStartedAt }),
       });
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Грешка при испраќање");
+        throw new Error(t.formError);
       }
       setSubmitted(true);
     } catch (err) {
@@ -276,7 +291,9 @@ export default function ContactPage() {
       email: "",
       topic: "",
       message: "",
+      website: "",
     });
+    setFormStartedAt(Date.now());
   };
 
   return (
@@ -399,6 +416,21 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                <div
+                  className="pointer-events-none absolute -left-[10000px] h-px w-px overflow-hidden"
+                  aria-hidden="true"
+                >
+                  <label htmlFor="website">Website</label>
+                  <input
+                    type="text"
+                    id="website"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleChange}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div>
                     <label htmlFor="firstName" className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#9ca3af]">
@@ -411,6 +443,9 @@ export default function ContactPage() {
                       value={formData.firstName}
                       onChange={handleChange}
                       required
+                      minLength={2}
+                      maxLength={60}
+                      autoComplete="given-name"
                       className="w-full rounded-lg border border-[#3a3a3a] bg-[#1e1e1e] px-4 py-2.5 text-white placeholder:text-[#9ca3af]/60 focus:border-[#525252] focus:outline-none focus:ring-1 focus:ring-[#525252]"
                       placeholder={t.formPlaceholderFirst}
                     />
@@ -426,6 +461,9 @@ export default function ContactPage() {
                       value={formData.lastName}
                       onChange={handleChange}
                       required
+                      minLength={2}
+                      maxLength={60}
+                      autoComplete="family-name"
                       className="w-full rounded-lg border border-[#3a3a3a] bg-[#1e1e1e] px-4 py-2.5 text-white placeholder:text-[#9ca3af]/60 focus:border-[#525252] focus:outline-none focus:ring-1 focus:ring-[#525252]"
                       placeholder={t.formPlaceholderLast}
                     />
@@ -442,6 +480,8 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
+                    maxLength={254}
+                    autoComplete="email"
                     className="w-full rounded-lg border border-[#3a3a3a] bg-[#1e1e1e] px-4 py-2.5 text-white placeholder:text-[#9ca3af]/60 focus:border-[#525252] focus:outline-none focus:ring-1 focus:ring-[#525252]"
                     placeholder="example@email.com"
                   />
@@ -475,6 +515,8 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     required
+                    minLength={10}
+                    maxLength={3000}
                     rows={5}
                     className="w-full resize-y rounded-lg border border-[#3a3a3a] bg-[#1e1e1e] px-4 py-2.5 text-white placeholder:text-[#9ca3af]/60 focus:border-[#525252] focus:outline-none focus:ring-1 focus:ring-[#525252]"
                     placeholder={t.formPlaceholderMessage}
