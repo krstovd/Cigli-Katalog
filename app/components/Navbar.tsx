@@ -82,6 +82,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setLang("mk")}
+              aria-pressed={lang === "mk"}
               className="min-h-[20px] min-w-[20px] rounded px-1.5 py-1 text-[9px] uppercase tracking-[0.15em] text-zinc-600 transition-all duration-200 hover:text-zinc-300 focus:outline-none data-[active=true]:text-zinc-200"
               data-active={lang === "mk"}
             >
@@ -91,6 +92,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setLang("en")}
+              aria-pressed={lang === "en"}
               className="min-h-[20px] min-w-[20px] rounded px-1.5 py-1 text-[9px] uppercase tracking-[0.15em] text-zinc-600 transition-all duration-200 hover:text-zinc-300 focus:outline-none data-[active=true]:text-zinc-200"
               data-active={lang === "en"}
             >
