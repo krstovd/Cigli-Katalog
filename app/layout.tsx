@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
 import ScrollToTop from "./components/ScrollToTop";
@@ -8,14 +8,12 @@ import { LangProvider } from "./context/LangContext";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const geistSans = Geist({
+const geistSans = localFont({
+  src: "./fonts/geist-latin.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
+  weight: "100 900",
+  fallback: ["Arial", "sans-serif"],
 });
 
 const siteDescription =
@@ -108,7 +106,7 @@ export default function RootLayout({
   return (
     <html lang="mk">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen overflow-x-hidden antialiased`}
+        className={`${geistSans.variable} min-h-screen overflow-x-hidden antialiased`}
       >
         <script
           type="application/ld+json"
