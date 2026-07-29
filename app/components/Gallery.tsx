@@ -40,6 +40,22 @@ export default function Gallery({ images }: GalleryProps) {
   const { lang } = useLang();
   const [selected, setSelected] = useState<string | null>(null);
   const onClose = useCallback(() => setSelected(null), []);
+  const onPrevious = useCallback(() => {
+    setSelected((current) => {
+      if (!current) return null;
+      const currentIndex = images.indexOf(current);
+      const previousIndex = (currentIndex - 1 + images.length) % images.length;
+      return images[previousIndex];
+    });
+  }, [images]);
+  const onNext = useCallback(() => {
+    setSelected((current) => {
+      if (!current) return null;
+      const currentIndex = images.indexOf(current);
+      const nextIndex = (currentIndex + 1) % images.length;
+      return images[nextIndex];
+    });
+  }, [images]);
 
   return (
     <>
@@ -93,6 +109,10 @@ export default function Gallery({ images }: GalleryProps) {
             src={selected}
             alt={altFromPath(selected)}
             onClose={onClose}
+            onPrevious={onPrevious}
+            onNext={onNext}
+            currentPosition={images.indexOf(selected) + 1}
+            total={images.length}
           />
         )}
       </AnimatePresence>

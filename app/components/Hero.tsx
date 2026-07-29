@@ -1,22 +1,34 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { useLang } from "@/app/context/LangContext";
 import type { Lang } from "@/app/context/LangContext";
+import { scrollToElement } from "@/lib/lenis-instance";
 
 const HERO_CONTENT: Record<
   Lang,
-  { label: string; title: string; tagline: string }
+  {
+    label: string;
+    title: string;
+    tagline: string;
+    primaryAction: string;
+    secondaryAction: string;
+  }
 > = {
   mk: {
     label: "КАТАЛОГ",
     title: "ДЕКОРАТИВНИ ГИПСЕНИ ЦИГЛИ",
     tagline: "ЗМАГА ДЕКОРАТИВНИ ЦИГЛИ",
+    primaryAction: "Разгледај модели",
+    secondaryAction: "Контактирај нè",
   },
   en: {
     label: "Catalog",
     title: "DECORATIVE GYPSUM BRICKS",
     tagline: "ZMAGA DECORATIVE BRICKS",
+    primaryAction: "Explore models",
+    secondaryAction: "Contact us",
   },
 };
 
@@ -82,6 +94,32 @@ export default function Hero() {
               style={{ originX: 0.5 }}
             />
           </div>
+
+          <motion.div
+            className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: "-8%" }}
+            transition={{ duration: 0.7, delay: 0.45, ease: "easeOut" }}
+          >
+            <Link
+              href="#catalog"
+              onClick={(event) => {
+                event.preventDefault();
+                scrollToElement("#catalog");
+                window.history.replaceState(null, "", "#catalog");
+              }}
+              className="inline-flex min-h-11 min-w-48 items-center justify-center rounded-full bg-white px-7 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-950 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-200 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            >
+              {content.primaryAction}
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex min-h-11 min-w-48 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-7 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            >
+              {content.secondaryAction}
+            </Link>
+          </motion.div>
         </motion.div>
       </AnimatePresence>
     </motion.header>

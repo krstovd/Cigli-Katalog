@@ -19,3 +19,20 @@ export function scrollToTop(): void {
     });
   }
 }
+
+export function scrollToElement(selector: string): void {
+  const element = document.querySelector<HTMLElement>(selector);
+  if (!element) return;
+
+  if (instance) {
+    instance.scrollTo(element, { duration: 1.2, offset: -64 });
+  } else {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    element.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  }
+}
