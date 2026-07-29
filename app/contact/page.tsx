@@ -146,9 +146,9 @@ const GOOGLE_MAPS_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7
 const GOOGLE_MAPS_LINK = "https://maps.google.com/?q=Zmaga+Dekorativni+Cigli"; // TODO: replace with your Google Maps link
 
 const SOCIAL_LINKS = [
-  { name: "Facebook", icon: "https://cdn.simpleicons.org/facebook/1877F2", href: "https://www.facebook.com/profile.php?id=100080947414300" },
-  { name: "Instagram", icon: "https://cdn.simpleicons.org/instagram/E4405F", href: "https://www.instagram.com/zmagadekocigli" },
-];
+  { name: "Facebook", platform: "facebook", href: "https://www.facebook.com/profile.php?id=100080947414300" },
+  { name: "Instagram", platform: "instagram", href: "https://www.instagram.com/zmagadekocigli" },
+] as const;
 
 function IconAddress() {
   return (
@@ -187,14 +187,49 @@ function IconCheck() {
 
 function IconViber() {
   return (
-    <img
-      src="https://cdn.simpleicons.org/viber/7360F2"
-      alt=""
-      width={22}
-      height={22}
-      className="size-[22px]"
-      aria-hidden
-    />
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M6.6 4.8A8.9 8.9 0 0112 3c4.97 0 9 3.58 9 8 0 2.17-.98 4.14-2.57 5.58L19 21l-4.13-2.2c-.92.13-1.88.17-2.87.17-4.97 0-9-3.58-9-8 0-1.52.48-2.94 1.32-4.15"
+        stroke="#7360F2"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.1 7.7c.3-.3.72-.28.94.05l1.02 1.54c.2.3.14.68-.12.9l-.52.44a7.2 7.2 0 003.95 3.95l.44-.52c.22-.26.6-.32.9-.12l1.54 1.02c.33.22.35.64.05.94l-.72.72c-.55.55-1.37.77-2.1.5a10.4 10.4 0 01-6.6-6.6c-.27-.73-.05-1.55.5-2.1l.72-.72z"
+        fill="#7360F2"
+      />
+    </svg>
+  );
+}
+
+function SocialIcon({ platform }: { platform: "facebook" | "instagram" }) {
+  if (platform === "facebook") {
+    return (
+      <svg className="size-8" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <circle cx="12" cy="12" r="10" fill="#1877F2" />
+        <path
+          d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.87.24-1.46 1.55-1.46h1.66V3.95a22 22 0 00-2.42-.13c-2.4 0-4.04 1.46-4.04 4.15V10H7.54v3h2.71v8h3.25z"
+          fill="white"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg className="size-8" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <defs>
+        <linearGradient id="instagram-gradient" x1="3" y1="21" x2="21" y2="3">
+          <stop stopColor="#FFDC80" />
+          <stop offset=".45" stopColor="#E1306C" />
+          <stop offset="1" stopColor="#833AB4" />
+        </linearGradient>
+      </defs>
+      <rect x="2" y="2" width="20" height="20" rx="6" fill="url(#instagram-gradient)" />
+      <rect x="6.5" y="6.5" width="11" height="11" rx="3.5" stroke="white" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="2.7" stroke="white" strokeWidth="1.5" />
+      <circle cx="16.2" cy="7.9" r="1" fill="white" />
+    </svg>
   );
 }
 
@@ -380,14 +415,9 @@ export default function ContactPage() {
                 rel="noopener noreferrer"
                 className="group flex flex-col items-center justify-center gap-2 rounded-xl border border-[#3a3a3a] bg-[#1e1e1e] p-6 transition-colors hover:bg-[#2a2a2a] hover:border-[#525252]"
               >
-                <img
-                  src={social.icon}
-                  alt=""
-                  width={32}
-                  height={32}
-                  className="size-8 transition-opacity group-hover:opacity-90"
-                  aria-hidden
-                />
+                <span className="transition-opacity group-hover:opacity-90">
+                  <SocialIcon platform={social.platform} />
+                </span>
                 <span className="text-xs font-medium uppercase tracking-wider text-[#9ca3af] transition-colors group-hover:text-white">
                   {social.name}
                 </span>

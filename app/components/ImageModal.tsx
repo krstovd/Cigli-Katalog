@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { useLang } from "@/app/context/LangContext";
 
 type ImageModalProps = {
   src: string;
@@ -10,13 +11,34 @@ type ImageModalProps = {
 };
 
 export default function ImageModal({ src, alt, onClose }: ImageModalProps) {
+  const { lang } = useLang();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
-    const onEscape = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onEscape);
+    const previouslyFocused = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+
+      if (event.key === "Tab") {
+        event.preventDefault();
+        closeButtonRef.current?.focus();
+      }
+    };
+
+    closeButtonRef.current?.focus();
+    document.addEventListener("keydown", onKeyDown);
     document.body.style.overflow = "hidden";
+
     return () => {
-      document.removeEventListener("keydown", onEscape);
-      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      if (previouslyFocused instanceof HTMLElement) {
+        previouslyFocused.focus();
+      }
     };
   }, [onClose]);
 
@@ -24,6 +46,9 @@ export default function ImageModal({ src, alt, onClose }: ImageModalProps) {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="gallery-dialog-title"
     >
       {/* Backdrop */}
       <div
@@ -45,17 +70,21 @@ export default function ImageModal({ src, alt, onClose }: ImageModalProps) {
         />
 
         {/* Image name label */}
-        <p className="mt-4 text-center text-[10px] uppercase tracking-[0.35em] text-white/40">
+        <p
+          id="gallery-dialog-title"
+          className="mt-4 text-center text-[10px] uppercase tracking-[0.35em] text-white/40"
+        >
           {alt}
         </p>
       </div>
 
       {/* Close button */}
       <button
+        ref={closeButtonRef}
         type="button"
         onClick={onClose}
         className="absolute right-5 top-5 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/40 md:right-7 md:top-7"
-        aria-label="Close"
+        aria-label={lang === "mk" ? "Затвори" : "Close"}
       >
         <svg
           className="h-5 w-5"
