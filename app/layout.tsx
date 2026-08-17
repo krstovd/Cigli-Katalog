@@ -24,7 +24,7 @@ const localBusinessJsonLd = {
   "@type": "HomeAndConstructionBusiness",
   name: "Zmaga Декоративни Цигли",
   url: "https://zmagacigli.com",
-  logo: "https://zmagacigli.com/images/zmaga%20logo.webp",
+  logo: "https://zmagacigli.com/images/zmaga-logo.png",
   image: "https://zmagacigli.com/og-image.jpg",
   description: siteDescription,
   email: "mailto:zmaga.dooel@yahoo.com",

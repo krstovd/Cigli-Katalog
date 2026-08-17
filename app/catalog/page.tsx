@@ -1,0 +1,5 @@
+import Image from "next/image";
+import {getGalleryImages} from "@/lib/images";
+import Footer from "@/app/components/Footer";
+const name=(s:string)=>s.split("/").pop()!.replace(".webp","");
+export default function Catalog(){const images=getGalleryImages();return <main><section className="page-hero" style={{backgroundImage:"url('/images/NOTTE.webp')"}}><div><h1>Каталог</h1><p>Откријте ја нашата колекција на декоративни гипсени цигли<br/>со различни текстури, бои и стилови.</p></div></section><div className="page-shell"><div className="filter-bar"><input placeholder="⌕  Пребарај модели..."/>{["СИТЕ","СВЕТЛИ","ТЕМНИ","ЦРВЕНИ","ИНДУСТРИСКИ","МОДЕРНИ"].map((x,i)=><button className={i?"filter-pill":"filter-pill active"} key={x}>{x}</button>)}</div><div className="catalog-grid">{images.map(src=><article className="product-card" key={src}><Image src={src} alt={name(src)} width={400} height={340}/><b>{name(src)}</b><small>Декоративна гипсена цигла</small><span>60лв / m²　→</span></article>)}</div></div><Footer/></main>}

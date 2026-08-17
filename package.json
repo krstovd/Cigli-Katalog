@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "catalog:localize": "node scripts/localize-catalog-images.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
