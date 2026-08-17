@@ -6,36 +6,35 @@ type ImageCardProps = {
   src: string;
   alt: string;
   onClick: () => void;
+  viewLabel: string;
 };
 
-export default function ImageCard({ src, alt, onClick }: ImageCardProps) {
+export default function ImageCard({ src, alt, onClick, viewLabel }: ImageCardProps) {
   return (
-    <div className="group relative aspect-[4/3] min-w-0 w-full cursor-pointer overflow-hidden rounded-2xl bg-zinc-900 shadow-lg shadow-black/40 ring-1 ring-white/0 transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-black/60 hover:ring-white/10">
+    <article className="group min-w-0">
       <button
         type="button"
-        className="absolute inset-0 z-10 h-full w-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white/25"
         onClick={onClick}
-        aria-label={`View ${alt}`}
-      />
-
-      {/* Image — scale + brightness on hover */}
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        className="object-cover brightness-90 transition-[transform,filter] duration-700 ease-out group-hover:scale-[1.05] group-hover:brightness-100"
-      />
-
-      {/* Directional overlay: deepens corners, lifts centre on hover */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-30" />
-
-      {/* Bottom gradient + name label — slides up on hover */}
-      <div className="absolute inset-x-0 bottom-0 z-[5] translate-y-1 bg-gradient-to-t from-black/80 via-black/30 to-transparent px-5 pb-4 pt-14 opacity-80 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-        <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-white/70 transition-colors duration-300 group-hover:text-white">
-          {alt}
-        </p>
+        aria-label={`${viewLabel} ${alt}`}
+        className="relative block aspect-[4/3] w-full overflow-hidden rounded-xl bg-zinc-900 ring-1 ring-white/[0.06] transition duration-300 hover:ring-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="object-cover transition duration-700 ease-out group-hover:scale-[1.025] group-hover:brightness-105"
+        />
+        <span className="absolute bottom-4 right-4 flex h-9 w-9 translate-y-1 items-center justify-center rounded-full border border-white/20 bg-black/35 text-white opacity-0 backdrop-blur-md transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
+            <path d="M5 12h14M13 6l6 6-6 6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+      </button>
+      <div className="flex items-center justify-between border-b border-white/[0.07] px-1 py-4">
+        <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-200">{alt}</h3>
+        <span className="text-[10px] uppercase tracking-[0.16em] text-zinc-600">{viewLabel}</span>
       </div>
-    </div>
+    </article>
   );
 }
