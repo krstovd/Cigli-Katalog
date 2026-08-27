@@ -1,5 +1,13 @@
-import Image from "next/image";
-import Link from "next/link";
-import Footer from "@/app/components/Footer";
-const spaces=[["ДНЕВНИ СОБИ","ARENA.webp"],["КУЈНИ","RUSTIK.webp"],["РЕСТОРАНИ","GOTIK.webp"],["КАФУЛИЊА","AMBER.webp"],["КАМИНИ","NOTTE.webp"],["СПАЛНИ СОБИ","LUMINA.webp"],["БАЊИ","AURA.webp"],["ФАСАДИ","VIRTUS.webp"]];
-export default function Inspiration(){return <main><section className="page-hero" style={{backgroundImage:"url('/images/RUSTIK.webp')"}}><div><p className="eyebrow">ИНСПИРАЦИЈА</p><h1>Инспирираме ваши простори</h1><p>Погледнете како нашите декоративни цигли го трансформираат секој простор.</p></div></section><div className="page-shell"><div className="filter-bar">{["СИТЕ ПРОСТОРИ","ДНЕВНИ СОБИ","КУЈНИ","РЕСТОРАНИ","КАФУЛИЊА"].map((x,i)=><button className={i?"filter-pill":"filter-pill active"} key={x}>{x}</button>)}</div><div className="inspiration-gallery">{spaces.map(([title,img])=><article className="wide-scene" key={title}><Image src={`/images/${img}`} alt={title} fill/><div><b>{title}</b><small>Погледни проекти　→</small></div></article>)}</div><div className="cta-strip"><div><b>Имате проект?</b><p>Ќе ви помогнеме да го изберете најдобриот модел.</p></div><Link href="/contact" className="gold-button">КОНТАКТИРАЈТЕ НÈ →</Link></div></div><Footer/></main>}
+import type { Metadata } from "next";
+import InspirationClient from "./InspirationClient";
+
+export const metadata: Metadata = {
+  title: "Инспирација",
+  description: "Идеи за уредување простор со декоративни цигли Zmaga.",
+  alternates: { canonical: "/inspiration" },
+  openGraph: { url: "/inspiration" },
+};
+
+export default function Inspiration() {
+  return <InspirationClient />;
+}

@@ -4,17 +4,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useLang, type Lang } from "@/app/context/LangContext";
+import { useFavorites } from "@/app/hooks/useFavorites";
 
-const links = [
-  ["ПОЧЕТНА", "/"],
-  ["КАТАЛОГ", "/catalog"],
-  ["ИНСПИРАЦИЈА", "/inspiration"],
-  ["ЗА НАС", "/about"],
-  ["КОНТАКТ", "/contact"],
-] as const;
+const links: Record<Lang, readonly (readonly [string, string])[]> = {
+  mk: [["ПОЧЕТНА", "/"], ["КАТАЛОГ", "/catalog"], ["ИНСПИРАЦИЈА", "/inspiration"], ["ЗА НАС", "/about"], ["КОНТАКТ", "/contact"]],
+  en: [["HOME", "/"], ["CATALOG", "/catalog"], ["INSPIRATION", "/inspiration"], ["ABOUT", "/about"], ["CONTACT", "/contact"]],
+};
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { lang, setLang } = useLang();
+  const { favorites } = useFavorites();
   const [open, setOpen] = useState(false);
 
   return (
@@ -23,7 +24,7 @@ export default function Navbar() {
         <Image src="/images/zmaga-logo.png" alt="ZMAGA Декоративни цигли" width={160} height={80} priority />
       </Link>
       <nav className={open ? "nav-links open" : "nav-links"}>
-        {links.map(([label, href]) => (
+        {links[lang].map(([label, href]) => (
           <Link key={href} href={href} onClick={() => setOpen(false)} className={pathname === href ? "active" : ""}>
             {label}
           </Link>
@@ -44,8 +45,17 @@ export default function Navbar() {
             </a>
           </span>
         </div>
-        <Link href="/contact" className="gold-button">ПОБАРАЈ ПОНУДА</Link>
-        <button className="menu-button" onClick={() => setOpen(!open)} aria-label="Мени">☰</button>
+        <Link href="/favorites" className={pathname === "/favorites" ? "nav-favorites active" : "nav-favorites"} aria-label={lang === "mk" ? `Омилени модели: ${favorites.length}` : `Favorite models: ${favorites.length}`} title={lang === "mk" ? "Омилени" : "Favorites"}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
+          {favorites.length > 0 && <span>{favorites.length}</span>}
+        </Link>
+        <Link href="/contact" className="gold-button">{lang === "mk" ? "ПОБАРАЈ ПОНУДА" : "REQUEST A QUOTE"}</Link>
+        <div className="language-switcher" role="group" aria-label="Language">
+          <button type="button" onClick={() => setLang("mk")} aria-pressed={lang === "mk"} className={lang === "mk" ? "active" : ""}>MK</button>
+          <span aria-hidden="true" />
+          <button type="button" onClick={() => setLang("en")} aria-pressed={lang === "en"} className={lang === "en" ? "active" : ""}>EN</button>
+        </div>
+        <button className="menu-button" onClick={() => setOpen(!open)} aria-label={lang === "mk" ? "Мени" : "Menu"} aria-expanded={open}>☰</button>
       </div>
     </header>
   );

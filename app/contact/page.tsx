@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Footer from "@/app/components/Footer";
 
@@ -14,9 +14,13 @@ const info: ContactInfo[] = [
 ];
 
 export default function Contact() {
-  const startedAt = useRef(Date.now());
+  const startedAt = useRef(0);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,26 +28,32 @@ export default function Contact() {
     setError("");
     const form = event.currentTarget;
     const data = new FormData(form);
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        firstName: data.get("firstName"),
-        lastName: data.get("lastName"),
-        email: data.get("email"),
-        topic: data.get("topic"),
-        message: data.get("message"),
-        website: data.get("website"),
-        startedAt: startedAt.current,
-      }),
-    });
-    if (response.ok) {
-      setStatus("success");
-      form.reset();
-      return;
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: data.get("firstName"),
+          lastName: data.get("lastName"),
+          email: data.get("email"),
+          topic: data.get("topic"),
+          message: data.get("message"),
+          website: data.get("website"),
+          startedAt: startedAt.current,
+        }),
+      });
+      if (response.ok) {
+        setStatus("success");
+        form.reset();
+        startedAt.current = Date.now();
+        return;
+      }
+      setStatus("error");
+      setError(response.status === 429 ? "Испративте премногу пораки. Обидете се повторно подоцна." : "Пораката не беше испратена. Обидете се повторно или контактирајте нè по телефон.");
+    } catch {
+      setStatus("error");
+      setError("Нема мрежна врска. Проверете ја конекцијата и обидете се повторно.");
     }
-    setStatus("error");
-    setError(response.status === 429 ? "Испративте премногу пораки. Обидете се повторно подоцна." : "Пораката не беше испратена. Обидете се повторно или контактирајте нè по телефон.");
   }
 
   return (
