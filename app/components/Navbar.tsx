@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useLang, type Lang } from "@/app/context/LangContext";
+import { useFavorites } from "@/app/hooks/useFavorites";
 
 const links: Record<Lang, readonly (readonly [string, string])[]> = {
   mk: [["ПОЧЕТНА", "/"], ["КАТАЛОГ", "/catalog"], ["ИНСПИРАЦИЈА", "/inspiration"], ["ЗА НАС", "/about"], ["КОНТАКТ", "/contact"]],
@@ -14,6 +15,7 @@ const links: Record<Lang, readonly (readonly [string, string])[]> = {
 export default function Navbar() {
   const pathname = usePathname();
   const { lang, setLang } = useLang();
+  const { favorites } = useFavorites();
   const [open, setOpen] = useState(false);
 
   return (
@@ -43,6 +45,10 @@ export default function Navbar() {
             </a>
           </span>
         </div>
+        <Link href="/favorites" className={pathname === "/favorites" ? "nav-favorites active" : "nav-favorites"} aria-label={lang === "mk" ? `Омилени модели: ${favorites.length}` : `Favorite models: ${favorites.length}`} title={lang === "mk" ? "Омилени" : "Favorites"}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
+          {favorites.length > 0 && <span>{favorites.length}</span>}
+        </Link>
         <Link href="/contact" className="gold-button">{lang === "mk" ? "ПОБАРАЈ ПОНУДА" : "REQUEST A QUOTE"}</Link>
         <div className="language-switcher" role="group" aria-label="Language">
           <button type="button" onClick={() => setLang("mk")} aria-pressed={lang === "mk"} className={lang === "mk" ? "active" : ""}>MK</button>

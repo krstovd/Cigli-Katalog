@@ -11,10 +11,10 @@ const products = [
   { name: "LUMINA", image: "LUMINA" },
 ];
 const inspiration = [
-  ["ДНЕВНИ СОБИ", "ARENA.webp"],
-  ["КУЈНИ", "RUSTIK.webp"],
-  ["РЕСТОРАНИ", "GOTIK.webp"],
-  ["КАФУЛИЊА", "AMBER.webp"],
+  ["ДНЕВНИ СОБИ", "inspiration/living-room-arena-v2.png"],
+  ["КУЈНИ", "inspiration/kitchen-rustik-v2.png"],
+  ["РЕСТОРАНИ", "inspiration/restaurant-gotik-v2.png"],
+  ["КАФУЛИЊА", "inspiration/cafe-amber-v2.png"],
 ];
 
 export default function Home() {
@@ -57,7 +57,7 @@ export default function Home() {
           <Link href="/inspiration" className="gold-button inspiration-button"><span>ПРОГЛЕДАЈ ИНСПИРАЦИЈА</span><b>→</b></Link>
         </div>
         <div className="inspiration-row">
-          {inspiration.map(([title, image]) => <Link href="/inspiration" className="scene-card" key={title}><Image src={`/images/${image}`} alt={title} fill /><b>{title}</b></Link>)}
+          {inspiration.map(([title, image]) => <Link href="/inspiration" className="scene-card" key={title}><Image src={`/images/${image}`} alt={`${title} со декоративни цигли од каталогот`} fill sizes="(min-width: 1051px) 18vw, (min-width: 701px) 45vw, 50vw" /><b>{title}</b></Link>)}
         </div>
       </section>
 
