@@ -4,6 +4,7 @@ import {
   escapeHtml,
   parseContactPayload,
   TOPIC_LABELS,
+  TOPIC_LABELS_EN,
 } from "@/lib/contact-validation";
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
       return badRequest();
     }
 
-    const { firstName, lastName, email, topic, message } = payload;
+    const { firstName, lastName, email, topic, message, lang } = payload;
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
       console.error("Contact form is unavailable: RESEND_API_KEY is missing.");
@@ -93,29 +94,30 @@ export async function POST(request: Request) {
     const safeLastName = escapeHtml(lastName);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message).replace(/\r?\n/g, "<br>");
-    const topicLabel = TOPIC_LABELS[topic];
+    const topicLabel = (lang === "en" ? TOPIC_LABELS_EN : TOPIC_LABELS)[topic];
     const fromEmail =
       process.env.RESEND_FROM_EMAIL ||
       "Zmaga Cigli <onboarding@resend.dev>";
     const contactEmail =
       process.env.CONTACT_EMAIL || "zmaga.dooel@yahoo.com";
 
+    const emailCopy = lang === "en" ? { heading: "New message from the contact form", name: "Name", email: "Email", topic: "Topic", message: "Message", subject: "Contact" } : { heading: "Нова порака од контакт форма", name: "Име", email: "Е-пошта", topic: "Тема", message: "Порака", subject: "Контакт" };
     const html = `
-      <h2>Нова порака од контакт форма</h2>
-      <p><strong>Име:</strong> ${safeFirstName} ${safeLastName}</p>
-      <p><strong>Е-пошта:</strong> ${safeEmail}</p>
-      <p><strong>Тема:</strong> ${topicLabel}</p>
-      <p><strong>Порака:</strong></p>
+      <h2>${emailCopy.heading}</h2>
+      <p><strong>${emailCopy.name}:</strong> ${safeFirstName} ${safeLastName}</p>
+      <p><strong>${emailCopy.email}:</strong> ${safeEmail}</p>
+      <p><strong>${emailCopy.topic}:</strong> ${topicLabel}</p>
+      <p><strong>${emailCopy.message}:</strong></p>
       <p>${safeMessage}</p>
     `;
     const text = [
-      "Нова порака од контакт форма",
+      emailCopy.heading,
       "",
-      `Име: ${firstName} ${lastName}`,
-      `Е-пошта: ${email}`,
-      `Тема: ${topicLabel}`,
+      `${emailCopy.name}: ${firstName} ${lastName}`,
+      `${emailCopy.email}: ${email}`,
+      `${emailCopy.topic}: ${topicLabel}`,
       "",
-      "Порака:",
+      `${emailCopy.message}:`,
       message,
     ].join("\n");
 
@@ -124,7 +126,7 @@ export async function POST(request: Request) {
       from: fromEmail,
       to: contactEmail,
       replyTo: email,
-      subject: `Контакт: ${topicLabel} - ${firstName} ${lastName}`,
+      subject: `${emailCopy.subject}: ${topicLabel} - ${firstName} ${lastName}`,
       html,
       text,
     });

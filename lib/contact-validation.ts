@@ -6,6 +6,14 @@ export const TOPIC_LABELS: Record<string, string> = {
   other: "Друго",
 };
 
+export const TOPIC_LABELS_EN: Record<string, string> = {
+  product: "Product inquiry",
+  order: "Purchase / order",
+  technical: "Technical question",
+  collaboration: "Partnership",
+  other: "Other",
+};
+
 const LIMITS = {
   name: 60,
   email: 254,
@@ -23,6 +31,7 @@ export type ContactPayload = {
   email: string;
   topic: keyof typeof TOPIC_LABELS;
   message: string;
+  lang: "mk" | "en";
 };
 
 function isStringWithinLimit(
@@ -46,7 +55,7 @@ export function parseContactPayload(
     return null;
   }
 
-  const { firstName, lastName, email, topic, message, website, startedAt } =
+  const { firstName, lastName, email, topic, message, website, startedAt, lang } =
     body as Record<string, unknown>;
   const completionTime =
     typeof startedAt === "number" ? now - startedAt : Number.NaN;
@@ -75,6 +84,7 @@ export function parseContactPayload(
     email: email.trim(),
     topic,
     message: message.trim(),
+    lang: lang === "en" ? "en" : "mk",
   };
 }
 

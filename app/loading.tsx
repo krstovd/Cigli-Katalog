@@ -1,11 +1,16 @@
+"use client";
+
+import { useLang } from "@/app/context/LangContext";
+
 export default function Loading() {
+  const { lang } = useLang();
   return (
     <main
       className="min-h-screen px-4 pb-20 pt-28 sm:px-6 md:px-10 md:pt-36 lg:px-16"
       aria-busy="true"
       aria-live="polite"
     >
-      <span className="sr-only">Се вчитува...</span>
+      <span className="sr-only">{lang === "en" ? "Loading..." : "Се вчитува..."}</span>
 
       <div className="mx-auto max-w-7xl animate-pulse">
         <div className="mx-auto flex max-w-2xl flex-col items-center">

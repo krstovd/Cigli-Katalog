@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import { LangProvider } from "./context/LangContext";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import LanguageMetadata from "./components/LanguageMetadata";
 
 const geistSans = localFont({
   src: "./fonts/geist-latin.woff2",
@@ -115,6 +116,7 @@ export default function RootLayout({
           }}
         />
         <LangProvider>
+          <LanguageMetadata />
           <SmoothScroll>
             <Navbar />
             {children}

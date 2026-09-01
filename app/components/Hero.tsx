@@ -1,18 +1,23 @@
+"use client";
+
 import Link from "next/link";
+import { useLang } from "@/app/context/LangContext";
 
 export default function Hero() {
+  const { lang } = useLang();
+  const en = lang === "en";
   return (
     <section className="hero">
       <div className="hero-shade" />
       <div className="hero-content">
-        <p className="eyebrow">ПРЕМИУМ ДЕКОРАТИВНИ</p>
-        <h1>ДЕКОРАТИВНИ<br />ГИПСЕНИ ЦИГЛИ</h1>
-        <p>Рачно изработени модели со уникатен изглед<br />за модерен и топол ентериер.</p>
+        <p className="eyebrow">{en ? "PREMIUM DECORATIVE" : "ПРЕМИУМ ДЕКОРАТИВНИ"}</p>
+        <h1>{en ? <>DECORATIVE<br />GYPSUM BRICKS</> : <>ДЕКОРАТИВНИ<br />ГИПСЕНИ ЦИГЛИ</>}</h1>
+        <p>{en ? <>Handcrafted models with a unique look<br />for modern, warm interiors.</> : <>Рачно изработени модели со уникатен изглед<br />за модерен и топол ентериер.</>}</p>
         <div className="button-row">
-          <Link href="/catalog" className="gold-button">РАЗГЛЕДАЈ КАТАЛОГ <b>→</b></Link>
-          <Link href="/contact" className="outline-button">КОНТАКТИРАЈ НÈ</Link>
+          <Link href="/catalog" className="gold-button">{en ? "VIEW CATALOG" : "РАЗГЛЕДАЈ КАТАЛОГ"} <b>→</b></Link>
+          <Link href="/contact" className="outline-button">{en ? "CONTACT US" : "КОНТАКТИРАЈ НÈ"}</Link>
         </div>
-        <span className="scroll-hint">↓ &nbsp; СКРОЛУВАЈ НАДОЛУ</span>
+        <span className="scroll-hint">↓ &nbsp; {en ? "SCROLL DOWN" : "СКРОЛУВАЈ НАДОЛУ"}</span>
       </div>
     </section>
   );
