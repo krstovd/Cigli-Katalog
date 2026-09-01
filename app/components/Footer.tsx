@@ -9,11 +9,11 @@ export default function Footer() {
   const copy = lang === "mk" ? {
     description: "Уникатни декоративни гипсени цигли за модерен и топол ентериер.", quick: "БРЗИ ЛИНКОВИ",
     links: ["Почетна", "Каталог", "Инспирација", "За нас", "Контакт"], contact: "КОНТАКТ", hours: "РАБОТНО ВРЕМЕ",
-    weekdays: "Пон – Пет: 08:00 – 18:00", weekend: "Сабота и Недела:", brand: "ZMAGA Декоративни цигли", quality: "Квалитет создаден за вашиот простор.",
+    weekdays: "Пон – Пет:", weekend: "Сабота и Недела:", brand: "ZMAGA Декоративни цигли", quality: "Квалитет создаден за вашиот простор.",
   } : {
     description: "Unique decorative gypsum bricks for modern, warm interiors.", quick: "QUICK LINKS",
     links: ["Home", "Catalog", "Inspiration", "About us", "Contact"], contact: "CONTACT", hours: "OPENING HOURS",
-    weekdays: "Mon – Fri: 08:00 – 18:00", weekend: "Saturday and Sunday:", brand: "ZMAGA Decorative Bricks", quality: "Quality created for your space.",
+    weekdays: "Mon – Fri:", weekend: "Saturday and Sunday:", brand: "ZMAGA Decorative Bricks", quality: "Quality created for your space.",
   };
   const hrefs = ["/", "/catalog", "/inspiration", "/about", "/contact"];
   return (
@@ -39,7 +39,7 @@ export default function Footer() {
         </div>
         <nav aria-label={copy.quick}><h4>{copy.quick}</h4>{copy.links.map((label, index) => <Link href={hrefs[index]} key={hrefs[index]}>{label}</Link>)}</nav>
         <div><h4>{copy.contact}</h4><a href="https://maps.google.com/?q=Zmaga+Dekorativni+Cigli" target="_blank" rel="noreferrer">Krum Vraninski 29<br />2300 Kochani</a><a href="tel:+38970842079">+389 70 842 079</a><a href="mailto:zmaga.dooel@yahoo.com">zmaga.dooel@yahoo.com</a></div>
-        <div><h4>{copy.hours}</h4><p>{copy.weekdays}</p><p>{copy.weekend}<br />09:00 – 17:00</p></div>
+        <div><h4>{copy.hours}</h4><p>{copy.weekdays}<br />08:00 – 18:00</p><p>{copy.weekend}<br />09:00 – 17:00</p></div>
       </div>
       <div className="copyright"><span>© 2026 {copy.brand}.</span><span>{copy.quality}</span></div>
     </footer>
