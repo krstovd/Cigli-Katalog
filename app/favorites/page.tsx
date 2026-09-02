@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Омилени модели",
   description: "Вашите омилени Zmaga декоративни цигли.",
   robots: { index: false, follow: true },
+  alternates: { canonical: "/favorites" },
 };
 
 export default function FavoritesPage() {

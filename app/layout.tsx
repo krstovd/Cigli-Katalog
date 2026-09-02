@@ -25,11 +25,16 @@ const localBusinessJsonLd = {
   "@type": "HomeAndConstructionBusiness",
   name: "Zmaga Декоративни Цигли",
   url: "https://zmagacigli.com",
-  logo: "https://zmagacigli.com/images/zmaga-logo.png",
+  logo: "https://zmagacigli.com/images/zmaga-logo.webp",
   image: "https://zmagacigli.com/og-image.jpg",
   description: siteDescription,
-  email: "mailto:zmaga.dooel@yahoo.com",
+  email: "zmaga.dooel@yahoo.com",
   telephone: "+38970842079",
+  priceRange: "€€",
+  areaServed: {
+    "@type": "Country",
+    name: "North Macedonia",
+  },
   address: {
     "@type": "PostalAddress",
     streetAddress: "Крум Вранински 29",
@@ -57,6 +62,23 @@ const localBusinessJsonLd = {
   ],
 } as const;
 
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Zmaga Декоративни Цигли",
+  alternateName: "Zmaga Cigli",
+  url: "https://zmagacigli.com",
+  inLanguage: ["mk-MK", "en"],
+  publisher: {
+    "@type": "Organization",
+    name: "Zmaga Декоративни Цигли",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://zmagacigli.com/images/zmaga-logo.webp",
+    },
+  },
+} as const;
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -71,6 +93,39 @@ export const metadata: Metadata = {
   },
   description: siteDescription,
   applicationName: "Zmaga Cigli",
+  category: "home improvement",
+  keywords: [
+    "декоративни цигли",
+    "гипсени цигли",
+    "декоративен камен",
+    "ѕидни облоги",
+    "цигли за ентериер",
+    "Zmaga Cigli",
+    "декоративни цигли Македонија",
+  ],
+  authors: [{ name: "Zmaga Декоративни Цигли" }],
+  creator: "Zmaga Декоративни Цигли",
+  publisher: "Zmaga Декоративни Цигли",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
   alternates: {
     canonical: "/",
   },
@@ -113,6 +168,12 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(localBusinessJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteJsonLd).replace(/</g, "\\u003c"),
           }}
         />
         <LangProvider>

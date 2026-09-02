@@ -24,7 +24,7 @@ export default function Home() {
     ["♧", "ЛЕСНА МОНТАЖА", "Лесно се поставуваат и одржуваат."], ["▣", "БРЗА ИСПОРАКА", "Сигурна испорака низ Македонија."],
   ];
   const inspiration = (en ? ["LIVING ROOMS", "KITCHENS", "RESTAURANTS", "CAFÉS"] : ["ДНЕВНИ СОБИ", "КУЈНИ", "РЕСТОРАНИ", "КАФУЛИЊА"])
-    .map((title, index) => [title, ["inspiration/living-room-arena-v2.png", "inspiration/kitchen-rustik-v2.png", "inspiration/restaurant-gotik-v2.png", "inspiration/cafe-amber-v2.png"][index]]);
+    .map((title, index) => [title, ["inspiration/living-room-arena-v2.webp", "inspiration/kitchen-rustik-v2.webp", "inspiration/restaurant-gotik-v2.webp", "inspiration/cafe-amber-v2.webp"][index]]);
   const stats = en ? [["12+", "YEARS OF EXPERIENCE"], ["800+", "COMPLETED PROJECTS"], ["500+", "SATISFIED CLIENTS"], ["100%", "COMMITMENT TO QUALITY"]] : [["12+", "ГОДИНИ ИСКУСТВО"], ["800+", "ЗАВРШЕНИ ПРОЕКТИ"], ["500+", "ЗАДОВОЛНИ КЛИЕНТИ"], ["100%", "ПОСВЕТЕНОСТ НА КВАЛИТЕТ"]];
   return (
     <main>

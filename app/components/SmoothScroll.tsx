@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
-import { MotionConfig } from "framer-motion";
 import { setLenis } from "@/lib/lenis-instance";
 
 export default function SmoothScroll({
@@ -14,7 +13,10 @@ export default function SmoothScroll({
     const reducedMotionQuery = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     );
-    if (reducedMotionQuery.matches) {
+    const desktopPointerQuery = window.matchMedia(
+      "(min-width: 769px) and (pointer: fine)"
+    );
+    if (reducedMotionQuery.matches || !desktopPointerQuery.matches) {
       return;
     }
 
@@ -22,7 +24,6 @@ export default function SmoothScroll({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 1.5,
     });
 
     setLenis(lenis);
@@ -31,7 +32,7 @@ export default function SmoothScroll({
 
     function raf(time: number) {
       if (!isRunning) return;
-      lenis.raf(time);
+      if (!document.hidden) lenis.raf(time);
       rafId = requestAnimationFrame(raf);
     }
 
@@ -45,5 +46,5 @@ export default function SmoothScroll({
     };
   }, []);
 
-  return <MotionConfig reducedMotion="user">{children}</MotionConfig>;
+  return children;
 }

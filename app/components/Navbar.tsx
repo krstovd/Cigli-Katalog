@@ -21,7 +21,7 @@ export default function Navbar() {
   return (
     <header className="site-nav">
       <Link href="/" className="brand" aria-label={lang === "mk" ? "ZMAGA почетна" : "ZMAGA home"}>
-        <Image src="/images/zmaga-logo.png" alt={lang === "mk" ? "ZMAGA Декоративни цигли" : "ZMAGA Decorative Bricks"} width={160} height={80} priority />
+        <Image src="/images/zmaga-logo.webp" alt={lang === "mk" ? "ZMAGA Декоративни цигли" : "ZMAGA Decorative Bricks"} width={160} height={80} priority />
       </Link>
       <nav className={open ? "nav-links open" : "nav-links"}>
         {links[lang].map(([label, href]) => (

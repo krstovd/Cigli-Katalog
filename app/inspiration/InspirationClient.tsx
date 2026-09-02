@@ -12,14 +12,14 @@ type SpaceImage={file:string;model:string};
 type Space={id:IconName;title:Record<Lang,string>;images:SpaceImage[]};
 
 const spaces:Space[]=[
-  {id:"living",title:{mk:"ДНЕВНИ СОБИ",en:"LIVING ROOMS"},images:[{file:"living-arena-final.png",model:"ARENA"},{file:"living-loft-final-02.png",model:"LOFT"}]},
-  {id:"kitchen",title:{mk:"КУЈНИ",en:"KITCHENS"},images:[{file:"kitchen-rustik-final.png",model:"RUSTIK"},{file:"kitchen-metro-final-02.png",model:"METRO"}]},
-  {id:"restaurant",title:{mk:"РЕСТОРАНИ",en:"RESTAURANTS"},images:[{file:"restaurant-gotik-final.png",model:"GOTIK"},{file:"restaurant-metro-final-02.png",model:"METRO"}]},
-  {id:"cafe",title:{mk:"КАФУЛИЊА",en:"CAFÉS"},images:[{file:"cafe-amber-running-bond-v3.png",model:"AMBER"},{file:"cafe-cooper-final-02.png",model:"COOPER"}]},
-  {id:"fireplace",title:{mk:"КАМИНИ",en:"FIREPLACES"},images:[{file:"fireplace-notte-final.png",model:"NOTTE"},{file:"fireplace-magma-final-02.png",model:"MAGMA"}]},
-  {id:"bedroom",title:{mk:"СПАЛНИ СОБИ",en:"BEDROOMS"},images:[{file:"bedroom-arena-final.png",model:"ARENA"},{file:"bedroom-luna-running-bond-v3.png",model:"LUNA"}]},
-  {id:"bathroom",title:{mk:"БАЊИ",en:"BATHROOMS"},images:[{file:"bathroom-aura-final.png",model:"AURA"},{file:"bathroom-lumina-final-02.png",model:"LUMINA"}]},
-  {id:"facade",title:{mk:"ФАСАДИ",en:"FACADES"},images:[{file:"facade-virtus-final.png",model:"VIRTUS"},{file:"facade-fortis-house-v5.png",model:"FORTIS"}]},
+  {id:"living",title:{mk:"ДНЕВНИ СОБИ",en:"LIVING ROOMS"},images:[{file:"living-arena-final.webp",model:"ARENA"},{file:"living-loft-final-02.webp",model:"LOFT"}]},
+  {id:"kitchen",title:{mk:"КУЈНИ",en:"KITCHENS"},images:[{file:"kitchen-rustik-final.webp",model:"RUSTIK"},{file:"kitchen-metro-final-02.webp",model:"METRO"}]},
+  {id:"restaurant",title:{mk:"РЕСТОРАНИ",en:"RESTAURANTS"},images:[{file:"restaurant-gotik-final.webp",model:"GOTIK"},{file:"restaurant-metro-final-02.webp",model:"METRO"}]},
+  {id:"cafe",title:{mk:"КАФУЛИЊА",en:"CAFÉS"},images:[{file:"cafe-amber-running-bond-v3.webp",model:"AMBER"},{file:"cafe-cooper-final-02.webp",model:"COOPER"}]},
+  {id:"fireplace",title:{mk:"КАМИНИ",en:"FIREPLACES"},images:[{file:"fireplace-notte-final.webp",model:"NOTTE"},{file:"fireplace-magma-final-02.webp",model:"MAGMA"}]},
+  {id:"bedroom",title:{mk:"СПАЛНИ СОБИ",en:"BEDROOMS"},images:[{file:"bedroom-arena-final.webp",model:"ARENA"},{file:"bedroom-luna-running-bond-v3.webp",model:"LUNA"}]},
+  {id:"bathroom",title:{mk:"БАЊИ",en:"BATHROOMS"},images:[{file:"bathroom-aura-final.webp",model:"AURA"},{file:"bathroom-lumina-final-02.webp",model:"LUMINA"}]},
+  {id:"facade",title:{mk:"ФАСАДИ",en:"FACADES"},images:[{file:"facade-virtus-final.webp",model:"VIRTUS"},{file:"facade-fortis-house-v5.webp",model:"FORTIS"}]},
 ];
 
 function Icon({name}:{name:IconName}){
@@ -54,7 +54,7 @@ export default function InspirationClient(){
   }),[visible]);
   const selectCategory=(nextCategory:IconName)=>{setCategory(nextCategory);setSelected(null);};
   return <main className="inspo-v2">
-    <section className="inspo-v2-hero"><Image src="/images/inspiration/final-rooms/fireplace-notte-final.png" alt="" fill priority sizes="100vw"/><div className="inspo-v2-overlay"/><div className="inspo-v2-hero-copy"><p>{lang==="mk"?"ИНСПИРАЦИЈА":"INSPIRATION"}</p><h1>{lang==="mk"?<>Инспирираме<br/>ваши простори</>:<>We inspire<br/>your spaces</>}</h1><span>{lang==="mk"?"Погледнете како нашите декоративни гипсени цигли го трансформираат секој простор во нешто посебно.":"See how our decorative gypsum bricks transform every space into something special."}</span></div></section>
+    <section className="inspo-v2-hero"><Image src="/images/inspiration/final-rooms/fireplace-notte-final.webp" alt="" fill priority sizes="100vw"/><div className="inspo-v2-overlay"/><div className="inspo-v2-hero-copy"><p>{lang==="mk"?"ИНСПИРАЦИЈА":"INSPIRATION"}</p><h1>{lang==="mk"?<>Инспирираме<br/>ваши простори</>:<>We inspire<br/>your spaces</>}</h1><span>{lang==="mk"?"Погледнете како нашите декоративни гипсени цигли го трансформираат секој простор во нешто посебно.":"See how our decorative gypsum bricks transform every space into something special."}</span></div></section>
     <section className="inspo-v2-shell">
       <div className="inspo-v2-filters" role="group" aria-label={lang==="mk"?"Категории":"Categories"}><button className={category==="all"?"active":""} onClick={()=>selectCategory("all")}><Icon name="all"/>{lang==="mk"?"СИТЕ ПРОСТОРИ":"ALL SPACES"}</button>{spaces.map(space=><button className={category===space.id?"active":""} onClick={()=>selectCategory(space.id)} key={space.id}><Icon name={space.id}/>{space.title[lang]}</button>)}</div>
       <div className={`inspo-v2-grid${category!=="all"?" selected":""}`}>{visible.map(({space,image},index)=><article key={`${space.id}-${image.file}`} role="button" tabIndex={0} aria-label={`${lang==="mk"?"Отвори слика":"Open image"}: ${space.title[lang]} ${image.model}`} onClick={()=>setSelected(image.file)} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();setSelected(image.file);}}}><Image src={`/images/inspiration/final-rooms/${image.file}`} alt={`${space.title[lang]} — ${image.model}`} fill sizes="(max-width:700px) 100vw, 25vw"/><div className="inspo-card-shade"/><div className="inspo-card-copy"><b>{space.title[lang]}</b><small>{lang==="mk"?"Модел":"Model"} {image.model} · {String(index+1).padStart(2,"0")}</small></div><span className="inspo-card-arrow" aria-hidden="true">→</span></article>)}</div>

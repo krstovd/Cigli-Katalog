@@ -56,7 +56,7 @@ export default function AboutPage() {
 
       <section className="about-values" id="values">
         <div className="about-values-photo">
-          <Image src="/images/about-values-arena.png" alt={en ? "Modern interior with ZMAGA ARENA decorative bricks" : "Модерен ентериер со ZMAGA ARENA декоративни цигли"} fill />
+          <Image src="/images/about-values-arena.webp" alt={en ? "Modern interior with ZMAGA ARENA decorative bricks" : "Модерен ентериер со ZMAGA ARENA декоративни цигли"} fill sizes="(max-width: 900px) 100vw, 50vw" />
         </div>
         <div className="about-values-copy">
           <p className="eyebrow">{en ? "OUR VALUES" : "НАШИТЕ ВРЕДНОСТИ"}</p>

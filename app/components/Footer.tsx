@@ -20,7 +20,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-grid">
         <div className="footer-brand">
-          <Image src="/images/zmaga-logo.png" alt={copy.brand} width={190} height={95} />
+          <Image src="/images/zmaga-logo.webp" alt={copy.brand} width={190} height={95} />
           <p>{copy.description}</p>
           <div className="footer-socials">
             <a href="https://www.facebook.com/profile.php?id=100080947414300" target="_blank" rel="noreferrer" aria-label="Facebook">

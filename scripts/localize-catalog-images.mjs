@@ -5,12 +5,6 @@ import sharp from "sharp";
 const root = process.cwd();
 const sourceDir = path.join(root, "public", "images");
 const outputDir = path.join(sourceDir, "en");
-const excluded = new Set([
-  "hero-section.webp",
-  "story-interior.webp",
-  "zmaga logo.webp",
-]);
-
 const escapeXml = (value) =>
   value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 
@@ -70,8 +64,7 @@ function localizationOverlay(width, height) {
 await mkdir(outputDir, { recursive: true });
 
 const files = (await readdir(sourceDir))
-  .filter((name) => name.toLowerCase().endsWith(".webp"))
-  .filter((name) => !excluded.has(name.toLowerCase()))
+  .filter((name) => /^[A-Z]+\.webp$/.test(name))
   .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 
 for (const file of files) {

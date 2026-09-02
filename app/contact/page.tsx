@@ -68,7 +68,7 @@ export default function Contact() {
 
   return (
     <main>
-      <section className="page-hero contact-hero" style={{ backgroundImage: "url('/images/contact-hero-rustik-running-bond.png')" }}>
+      <section className="page-hero contact-hero" style={{ backgroundImage: "url('/images/contact-hero-rustik-running-bond.webp')" }}>
         <div><p className="eyebrow">{en ? "CONTACT" : "КОНТАКТ"}</p><h1>{en ? "Contact us" : "Контактирајте нè"}</h1><p>{en ? "Do you have questions or would you like a quote?" : "Имате прашања или сакате да добиете понуда?"}</p></div>
       </section>
 
