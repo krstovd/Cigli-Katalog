@@ -12,14 +12,70 @@ type SpaceImage={file:string;model:string};
 type Space={id:IconName;title:Record<Lang,string>;images:SpaceImage[]};
 
 const spaces:Space[]=[
-  {id:"living",title:{mk:"ДНЕВНИ СОБИ",en:"LIVING ROOMS"},images:[{file:"living-arena-final.webp",model:"ARENA"},{file:"living-loft-final-02.webp",model:"LOFT"}]},
-  {id:"kitchen",title:{mk:"КУЈНИ",en:"KITCHENS"},images:[{file:"kitchen-rustik-final.webp",model:"RUSTIK"},{file:"kitchen-metro-final-02.webp",model:"METRO"}]},
-  {id:"restaurant",title:{mk:"РЕСТОРАНИ",en:"RESTAURANTS"},images:[{file:"restaurant-gotik-final.webp",model:"GOTIK"},{file:"restaurant-metro-final-02.webp",model:"METRO"}]},
-  {id:"cafe",title:{mk:"КАФУЛИЊА",en:"CAFÉS"},images:[{file:"cafe-amber-running-bond-v3.webp",model:"AMBER"},{file:"cafe-cooper-final-02.webp",model:"COOPER"}]},
-  {id:"fireplace",title:{mk:"КАМИНИ",en:"FIREPLACES"},images:[{file:"fireplace-notte-final.webp",model:"NOTTE"},{file:"fireplace-magma-final-02.webp",model:"MAGMA"}]},
-  {id:"bedroom",title:{mk:"СПАЛНИ СОБИ",en:"BEDROOMS"},images:[{file:"bedroom-arena-final.webp",model:"ARENA"},{file:"bedroom-luna-running-bond-v3.webp",model:"LUNA"}]},
-  {id:"bathroom",title:{mk:"БАЊИ",en:"BATHROOMS"},images:[{file:"bathroom-aura-final.webp",model:"AURA"},{file:"bathroom-lumina-final-02.webp",model:"LUMINA"}]},
-  {id:"facade",title:{mk:"ФАСАДИ",en:"FACADES"},images:[{file:"facade-virtus-final.webp",model:"VIRTUS"},{file:"facade-fortis-house-v5.webp",model:"FORTIS"}]},
+  {id:"living",title:{mk:"ДНЕВНИ СОБИ",en:"LIVING ROOMS"},images:[
+    {file:"living-arena-final.webp",model:"ARENA"},
+    {file:"living-loft-final-02.webp",model:"LOFT"},
+    {file:"living-santo-running-bond-v2.webp",model:"SANTO"},
+    {file:"living-azura-catalog-v4.webp",model:"AZURA"},
+    {file:"living-lago-pattern-v4.webp",model:"LAGO"},
+      {file:"living-colos-black-detail-v5.webp",model:"COLOS"},
+  ]},
+  {id:"kitchen",title:{mk:"КУЈНИ",en:"KITCHENS"},images:[
+    {file:"kitchen-rustik-final.webp",model:"RUSTIK"},
+    {file:"kitchen-metro-final-02.webp",model:"METRO"},
+    {file:"kitchen-santo-relief-v4.webp",model:"SANTO"},
+    {file:"kitchen-azura-relief-v4.webp",model:"AZURA"},
+    {file:"kitchen-lago-relief-v4.webp",model:"LAGO"},
+    {file:"kitchen-colos-relief-v4.webp",model:"COLOS"},
+  ]},
+  {id:"restaurant",title:{mk:"РЕСТОРАНИ",en:"RESTAURANTS"},images:[
+    {file:"restaurant-gotik-final.webp",model:"GOTIK"},
+    {file:"restaurant-metro-final-02.webp",model:"METRO"},
+    {file:"restaurant-santo-realistic-v4.webp",model:"SANTO"},
+    {file:"restaurant-azura-model-v2.webp",model:"AZURA"},
+    {file:"restaurant-lago-realistic-v4.webp",model:"LAGO"},
+    {file:"restaurant-colos-model-v2.webp",model:"COLOS"},
+  ]},
+  {id:"cafe",title:{mk:"КАФУЛИЊА",en:"CAFÉS"},images:[
+    {file:"cafe-amber-running-bond-v3.webp",model:"AMBER"},
+    {file:"cafe-cooper-final-02.webp",model:"COOPER"},
+    {file:"cafe-santo-real-v2.webp",model:"SANTO"},
+    {file:"cafe-azura-real-v2.webp",model:"AZURA"},
+    {file:"cafe-lago-real-v2.webp",model:"LAGO"},
+    {file:"cafe-colos-real-v2.webp",model:"COLOS"},
+  ]},
+  {id:"fireplace",title:{mk:"КАМИНИ",en:"FIREPLACES"},images:[
+    {file:"fireplace-notte-final.webp",model:"NOTTE"},
+    {file:"fireplace-magma-final-02.webp",model:"MAGMA"},
+    {file:"fireplace-santo-v1.webp",model:"SANTO"},
+    {file:"fireplace-azura-geometry-v2.webp",model:"AZURA"},
+    {file:"fireplace-lago-v1.webp",model:"LAGO"},
+    {file:"fireplace-colos-v1.webp",model:"COLOS"},
+  ]},
+  {id:"bedroom",title:{mk:"СПАЛНИ СОБИ",en:"BEDROOMS"},images:[
+    {file:"bedroom-arena-final.webp",model:"ARENA"},
+    {file:"bedroom-luna-running-bond-v3.webp",model:"LUNA"},
+    {file:"bedroom-santo-v1.webp",model:"SANTO"},
+    {file:"bedroom-azura-geometry-v2.webp",model:"AZURA"},
+    {file:"bedroom-lago-geometry-v2.webp",model:"LAGO"},
+    {file:"bedroom-colos-geometry-v2.webp",model:"COLOS"},
+  ]},
+  {id:"bathroom",title:{mk:"БАЊИ",en:"BATHROOMS"},images:[
+    {file:"bathroom-aura-final.webp",model:"AURA"},
+    {file:"bathroom-lumina-final-02.webp",model:"LUMINA"},
+    {file:"bathroom-santo-running-bond-v3.webp",model:"SANTO"},
+    {file:"bathroom-azura-geometry-v2.webp",model:"AZURA"},
+    {file:"bathroom-lago-geometry-v2.webp",model:"LAGO"},
+    {file:"bathroom-colos-geometry-v2.webp",model:"COLOS"},
+  ]},
+  {id:"facade",title:{mk:"ФАСАДИ",en:"FACADES"},images:[
+    {file:"facade-virtus-final.webp",model:"VIRTUS"},
+    {file:"facade-fortis-house-v5.webp",model:"FORTIS"},
+    {file:"facade-santo-fixed-v3.webp",model:"SANTO"},
+    {file:"facade-azura-fixed-v3.webp",model:"AZURA"},
+    {file:"facade-lago-fixed-v3.webp",model:"LAGO"},
+    {file:"facade-colos-fixed-v3.webp",model:"COLOS"},
+  ]},
 ];
 
 function Icon({name}:{name:IconName}){
