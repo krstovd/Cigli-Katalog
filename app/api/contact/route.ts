@@ -67,11 +67,18 @@ async function checkRateLimit(
   now: number
 ): Promise<{ limited: boolean; retryAfter: number }> {
   if (sharedRateLimit) {
-    const result = await sharedRateLimit.limit(identifier);
-    return {
-      limited: !result.success,
-      retryAfter: Math.max(1, Math.ceil((result.reset - now) / 1000)),
-    };
+    try {
+      const result = await sharedRateLimit.limit(identifier);
+      return {
+        limited: !result.success,
+        retryAfter: Math.max(1, Math.ceil((result.reset - now) / 1000)),
+      };
+    } catch (error) {
+      console.error(
+        "Shared contact rate limiter is unavailable; using local fallback:",
+        error
+      );
+    }
   }
 
   return {

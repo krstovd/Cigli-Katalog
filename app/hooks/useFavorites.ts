@@ -5,6 +5,7 @@ import { useMemo, useSyncExternalStore } from "react";
 const STORAGE_KEY = "zmaga-favorite-models";
 const CHANGE_EVENT = "zmaga-favorites-change";
 const EMPTY_SNAPSHOT = "[]";
+let memorySnapshot: string | null = null;
 
 function subscribe(callback: () => void) {
   window.addEventListener("storage", callback);
@@ -16,6 +17,8 @@ function subscribe(callback: () => void) {
 }
 
 function getSnapshot() {
+  if (memorySnapshot !== null) return memorySnapshot;
+
   try {
     return window.localStorage.getItem(STORAGE_KEY) ?? EMPTY_SNAPSHOT;
   } catch {
@@ -24,12 +27,16 @@ function getSnapshot() {
 }
 
 function save(models: string[]) {
+  const nextSnapshot = JSON.stringify(models);
+
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(models));
-    window.dispatchEvent(new Event(CHANGE_EVENT));
+    window.localStorage.setItem(STORAGE_KEY, nextSnapshot);
+    memorySnapshot = null;
   } catch {
-    // Favorites remain available for the current render when storage is blocked.
+    memorySnapshot = nextSnapshot;
   }
+
+  window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
 export function useFavorites() {
