@@ -8,7 +8,9 @@ const EMPTY_SNAPSHOT = "[]";
 let memorySnapshot: string | null = null;
 
 function subscribe(callback: () => void) {
-  const handleStorageChange = () => {
+  const handleStorageChange = (event: StorageEvent) => {
+    if (event.key !== null && event.key !== STORAGE_KEY) return;
+
     memorySnapshot = null;
     callback();
   };
