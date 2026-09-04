@@ -31,6 +31,16 @@ export default function Contact() {
     startedAt.current = Date.now();
   }, []);
 
+  useEffect(() => {
+    if (status !== "success") return;
+
+    const timeoutId = window.setTimeout(() => {
+      setStatus("idle");
+    }, 5_000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [status]);
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("sending");

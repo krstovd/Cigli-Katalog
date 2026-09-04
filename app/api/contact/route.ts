@@ -139,6 +139,68 @@ export async function POST(request: Request) {
       );
     }
 
+    const autoReply = lang === "en"
+      ? {
+          brand: "",
+          subject: "We received your message",
+          greeting: `Hello ${safeFirstName},`,
+          confirmation: "Thank you for contacting Zmaga Cigli. We have received your message and will get back to you as soon as possible.",
+          summary: "Your inquiry",
+          closing: "Kind regards,",
+          team: "Zmaga Cigli Team",
+          note: "This is an automatic confirmation. You can reply directly to this email if you would like to add more information.",
+        }
+      : {
+          brand: "",
+          subject: "Ја примивме вашата порака",
+          greeting: `Здраво ${safeFirstName},`,
+          confirmation: "Ви благодариме што контактиравте со Змага Цигли. Ја примивме вашата порака и ќе ви одговориме во најкраток можен рок.",
+          summary: "Вашето барање",
+          closing: "Со почит,",
+          team: "Тимот на Змага Цигли",
+          note: "Ова е автоматска потврда. Можете директно да одговорите на оваа е-пошта доколку сакате да додадете повеќе информации.",
+        };
+
+    const autoReplyHtml = `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1f1f1f;max-width:620px;margin:0 auto">
+        <h2 style="color:#b68a3a">${autoReply.brand}</h2>
+        <p>${autoReply.greeting}</p>
+        <p>${autoReply.confirmation}</p>
+        <div style="margin:24px 0;padding:18px;border-left:4px solid #b68a3a;background:#f7f5f1">
+          <strong>${autoReply.summary}: ${topicLabel}</strong>
+          <p style="margin-bottom:0">${safeMessage}</p>
+        </div>
+        <p>${autoReply.closing}<br><strong>${autoReply.team}</strong></p>
+        <p style="margin-top:28px;font-size:12px;color:#666">${autoReply.note}</p>
+      </div>
+    `;
+    const autoReplyText = [
+      autoReply.greeting,
+      "",
+      autoReply.confirmation,
+      "",
+      `${autoReply.summary}: ${topicLabel}`,
+      message,
+      "",
+      autoReply.closing,
+      autoReply.team,
+      "",
+      autoReply.note,
+    ].join("\n");
+
+    const { error: autoReplyError } = await resend.emails.send({
+      from: fromEmail,
+      to: email,
+      replyTo: contactEmail,
+      subject: autoReply.subject,
+      html: autoReplyHtml,
+      text: autoReplyText,
+    });
+
+    if (autoReplyError) {
+      console.error("Resend rejected the contact form auto-reply:", autoReplyError);
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Contact form request failed:", error);
