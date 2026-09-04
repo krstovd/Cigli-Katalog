@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLang } from "@/app/context/LangContext";
 
@@ -8,6 +9,14 @@ export default function Hero() {
   const en = lang === "en";
   return (
     <section className="hero">
+      <Image
+        className="hero-image"
+        src="/images/fossil-hero-ultrawide-v3.webp"
+        alt=""
+        fill
+        preload
+        sizes="100vw"
+      />
       <div className="hero-shade" />
       <div className="hero-content">
         <p className="eyebrow">{en ? "PREMIUM DECORATIVE" : "ПРЕМИУМ ДЕКОРАТИВНИ"}</p>
