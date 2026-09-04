@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
 import ScrollToTop from "./components/ScrollToTop";
@@ -7,16 +7,77 @@ import Navbar from "./components/Navbar";
 import { LangProvider } from "./context/LangContext";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import LanguageMetadata from "./components/LanguageMetadata";
 
-const geistSans = Geist({
+const geistSans = localFont({
+  src: "./fonts/geist-latin.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  display: "swap",
+  weight: "100 900",
+  fallback: ["Arial", "sans-serif"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const siteDescription =
+  "Декоративни гипсени цигли за модерен и класичен ентериер. Разгледајте 47+ модели од Zmaga Декоративни Цигли.";
+
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HomeAndConstructionBusiness",
+  name: "Zmaga Декоративни Цигли",
+  url: "https://zmagacigli.com",
+  logo: "https://zmagacigli.com/images/zmaga-logo.webp",
+  image: "https://zmagacigli.com/og-image.jpg",
+  description: siteDescription,
+  email: "zmaga.dooel@yahoo.com",
+  telephone: "+38970842079",
+  priceRange: "€€",
+  areaServed: {
+    "@type": "Country",
+    name: "North Macedonia",
+  },
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Крум Вранински 29",
+    postalCode: "2300",
+    addressLocality: "Кочани",
+    addressCountry: "MK",
+  },
+  sameAs: [
+    "https://www.facebook.com/profile.php?id=100080947414300",
+    "https://www.instagram.com/zmagadekocigli",
+  ],
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "08:00",
+      closes: "18:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Saturday", "Sunday"],
+      opens: "09:00",
+      closes: "17:00",
+    },
+  ],
+} as const;
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Zmaga Декоративни Цигли",
+  alternateName: "Zmaga Cigli",
+  url: "https://zmagacigli.com",
+  inLanguage: ["mk-MK", "en"],
+  publisher: {
+    "@type": "Organization",
+    name: "Zmaga Декоративни Цигли",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://zmagacigli.com/images/zmaga-logo.webp",
+    },
+  },
+} as const;
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -25,20 +86,71 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Декоративни гипсени цигли | Zmaga Cigli",
-  description: "Architecture and design, curated.",
+  metadataBase: new URL("https://zmagacigli.com"),
+  title: {
+    default: "Декоративни гипсени цигли | Zmaga Cigli",
+    template: "%s | Zmaga Cigli",
+  },
+  description: siteDescription,
+  applicationName: "Zmaga Cigli",
+  category: "home improvement",
+  keywords: [
+    "декоративни цигли",
+    "гипсени цигли",
+    "декоративен камен",
+    "ѕидни облоги",
+    "цигли за ентериер",
+    "Zmaga Cigli",
+    "декоративни цигли Македонија",
+  ],
+  authors: [{ name: "Zmaga Декоративни Цигли" }],
+  creator: "Zmaga Декоративни Цигли",
+  publisher: "Zmaga Декоративни Цигли",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
+    type: "website",
+    siteName: "Zmaga Cigli",
+    title: "Декоративни гипсени цигли | Zmaga Cigli",
+    description: siteDescription,
+    url: "/",
+    locale: "mk_MK",
+    alternateLocale: ["en_US"],
     images: [
       {
-        url: "https://zmagacigli.com/og-image.jpg",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
+        alt: "Zmaga декоративни гипсени цигли",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    images: ["https://zmagacigli.com/og-image.jpg"],
+    title: "Декоративни гипсени цигли | Zmaga Cigli",
+    description: siteDescription,
+    images: ["/og-image.jpg"],
   },
 };
 
@@ -48,11 +160,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="mk">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen overflow-x-hidden antialiased`}
+        className={`${geistSans.variable} min-h-screen overflow-x-hidden antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
         <LangProvider>
+          <LanguageMetadata />
           <SmoothScroll>
             <Navbar />
             {children}

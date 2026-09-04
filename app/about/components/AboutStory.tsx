@@ -47,7 +47,7 @@ export default function AboutStory() {
             }}
           >
             <Image
-              src="/images/story-interior.png"
+              src="/images/story-interior.webp"
               alt={lang === "mk" ? "Интериер со декоративни цигли" : "Interior with decorative bricks"}
               fill
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"

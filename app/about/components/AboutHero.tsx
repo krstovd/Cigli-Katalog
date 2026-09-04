@@ -48,7 +48,7 @@ export default function AboutHero() {
     <section className="relative flex min-h-[560px] flex-col items-center justify-center overflow-hidden border-b-0 md:min-h-[70vh]">
       {/* Background image */}
       <Image
-        src="/images/hero-section.png"
+        src="/images/hero-section.webp"
         alt=""
         fill
         priority

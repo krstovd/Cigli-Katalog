@@ -2,21 +2,24 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test tests/contact-validation.test.ts",
+    "catalog:localize": "node scripts/localize-catalog-images.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
-    "resend": "^4.0.0",
     "@vercel/speed-insights": "^1.3.1",
     "framer-motion": "^11.18.2",
     "lenis": "^1.3.18",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "resend": "^4.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -25,6 +28,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
