@@ -71,7 +71,7 @@ const spaces:Space[]=[
   {id:"facade",title:{mk:"ФАСАДИ",en:"FACADES"},images:[
     {file:"facade-virtus-final.webp",model:"VIRTUS"},
     {file:"facade-fortis-house-v5.webp",model:"FORTIS"},
-    {file:"facade-santo-modern-v8.png",model:"SANTO"},
+    {file:"facade-santo-modern-v8.webp",model:"SANTO"},
     {file:"facade-azura-fixed-v3.webp",model:"AZURA"},
     {file:"facade-lago-fixed-v3.webp",model:"LAGO"},
     {file:"facade-colos-fixed-v3.webp",model:"COLOS"},

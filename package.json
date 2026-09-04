@@ -2,11 +2,13 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --test tests/contact-validation.test.ts",
     "catalog:localize": "node scripts/localize-catalog-images.mjs"
   },
   "dependencies": {
