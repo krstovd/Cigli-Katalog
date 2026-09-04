@@ -15,7 +15,7 @@ function localizationOverlay(width, height) {
 
   const description = "Decorative gypsum brick";
   const descriptionSecondLine = "for interior use";
-  const packageText = "60 pcs. / 1m²   |   9.50–10 kg per package";
+  const packageText = "56 pcs. / 1m²   |   9.50–10 kg per package";
 
   return Buffer.from(`
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"

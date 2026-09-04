@@ -46,12 +46,12 @@ export default function CatalogClient({ images }: { images: string[] }) {
   const labels = lang === "mk" ? {
     title: "Каталог", intro: "Откријте ја нашата колекција на декоративни гипсени цигли со различни текстури, бои и стилови.",
     search: "Пребарај модели...",
-    sort: "Сортирај:", newest: "А–Ш", reverse: "Ш–А", show: "Прикажи:", description: "Декоративна гипсена цигла", unit: "60 парчиња / m²",
+    sort: "Сортирај:", newest: "А–Ш", reverse: "Ш–А", show: "Прикажи:", description: "Декоративна гипсена цигла", unit: "56 парчиња / m²",
     empty: "Не пронајдовме модел според избраните критериуми.", favorite: "Додај во омилени", previous: "Претходна страница", next: "Следна страница",
   } : {
     title: "Catalog", intro: "Discover our collection of decorative gypsum bricks in a range of textures, colors and styles.",
     search: "Search models...",
-    sort: "Sort:", newest: "A–Z", reverse: "Z–A", show: "View:", description: "Decorative gypsum brick", unit: "60 pieces / m²",
+    sort: "Sort:", newest: "A–Z", reverse: "Z–A", show: "View:", description: "Decorative gypsum brick", unit: "56 pieces / m²",
     empty: "No models match the selected criteria.", favorite: "Add to favorites", previous: "Previous page", next: "Next page",
   };
   return <main className="catalog-page">

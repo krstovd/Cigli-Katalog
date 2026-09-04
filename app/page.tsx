@@ -46,7 +46,7 @@ export default function Home() {
               <div className="home-product-image">
                 <Image src={`/images/home/${image}.webp`} alt={en ? `${name} decorative brick in an interior` : `${name} декоративна цигла во ентериер`} fill sizes="(min-width: 1051px) 260px, (min-width: 701px) 30vw, 45vw" />
               </div>
-              <b>{name}</b><small>{en ? "Decorative gypsum brick" : "Декоративна гипсена цигла"}</small><span>{en ? "60 pieces / m²" : "60 парчиња / m²"}　→</span>
+              <b>{name}</b><small>{en ? "Decorative gypsum brick" : "Декоративна гипсена цигла"}</small><span>{en ? "56 pieces / m²" : "56 парчиња / m²"}</span>
             </Link>
           ))}
         </div>
