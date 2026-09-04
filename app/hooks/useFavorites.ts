@@ -8,10 +8,15 @@ const EMPTY_SNAPSHOT = "[]";
 let memorySnapshot: string | null = null;
 
 function subscribe(callback: () => void) {
-  window.addEventListener("storage", callback);
+  const handleStorageChange = () => {
+    memorySnapshot = null;
+    callback();
+  };
+
+  window.addEventListener("storage", handleStorageChange);
   window.addEventListener(CHANGE_EVENT, callback);
   return () => {
-    window.removeEventListener("storage", callback);
+    window.removeEventListener("storage", handleStorageChange);
     window.removeEventListener(CHANGE_EVENT, callback);
   };
 }
