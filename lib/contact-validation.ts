@@ -72,7 +72,7 @@ export function parseContactPayload(
     !isStringWithinLimit(email, 3, LIMITS.email) ||
     !EMAIL_PATTERN.test(email.trim()) ||
     typeof topic !== "string" ||
-    !(topic in TOPIC_LABELS) ||
+    !Object.hasOwn(TOPIC_LABELS, topic) ||
     !isStringWithinLimit(message, 10, LIMITS.message)
   ) {
     return null;

@@ -16,12 +16,20 @@ function subscribe(callback: () => void) {
 }
 
 function getSnapshot() {
-  return window.localStorage.getItem(STORAGE_KEY) ?? EMPTY_SNAPSHOT;
+  try {
+    return window.localStorage.getItem(STORAGE_KEY) ?? EMPTY_SNAPSHOT;
+  } catch {
+    return EMPTY_SNAPSHOT;
+  }
 }
 
 function save(models: string[]) {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(models));
-  window.dispatchEvent(new Event(CHANGE_EVENT));
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(models));
+    window.dispatchEvent(new Event(CHANGE_EVENT));
+  } catch {
+    // Favorites remain available for the current render when storage is blocked.
+  }
 }
 
 export function useFavorites() {

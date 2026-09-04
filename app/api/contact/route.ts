@@ -1,5 +1,7 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 import {
   escapeHtml,
   parseContactPayload,
@@ -9,6 +11,25 @@ import {
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
+
+const redisUrl =
+  process.env.UPSTASH_REDIS_REST_KV_REST_API_URL ||
+  process.env.UPSTASH_REDIS_REST_URL ||
+  process.env.KV_REST_API_URL;
+const redisToken =
+  process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN ||
+  process.env.UPSTASH_REDIS_REST_TOKEN ||
+  process.env.KV_REST_API_TOKEN;
+const sharedRateLimit =
+  redisUrl && redisToken
+    ? new Ratelimit({
+        redis: new Redis({ url: redisUrl, token: redisToken }),
+        limiter: Ratelimit.slidingWindow(RATE_LIMIT_MAX_REQUESTS, "10 m"),
+        prefix: "zmaga:contact",
+        analytics: true,
+        timeout: 1_500,
+      })
+    : null;
 
 type RateLimitEntry = {
   count: number;
@@ -26,7 +47,7 @@ function getClientIp(request: Request): string {
   );
 }
 
-function isRateLimited(identifier: string, now: number): boolean {
+function isLocallyRateLimited(identifier: string, now: number): boolean {
   const existing = rateLimitStore.get(identifier);
 
   if (!existing || existing.resetAt <= now) {
@@ -39,6 +60,24 @@ function isRateLimited(identifier: string, now: number): boolean {
 
   existing.count += 1;
   return existing.count > RATE_LIMIT_MAX_REQUESTS;
+}
+
+async function checkRateLimit(
+  identifier: string,
+  now: number
+): Promise<{ limited: boolean; retryAfter: number }> {
+  if (sharedRateLimit) {
+    const result = await sharedRateLimit.limit(identifier);
+    return {
+      limited: !result.success,
+      retryAfter: Math.max(1, Math.ceil((result.reset - now) / 1000)),
+    };
+  }
+
+  return {
+    limited: isLocallyRateLimited(identifier, now),
+    retryAfter: RATE_LIMIT_WINDOW_MS / 1000,
+  };
 }
 
 function cleanExpiredRateLimits(now: number): void {
@@ -59,13 +98,14 @@ export async function POST(request: Request) {
   try {
     const now = Date.now();
     cleanExpiredRateLimits(now);
+    const rateLimit = await checkRateLimit(getClientIp(request), now);
 
-    if (isRateLimited(getClientIp(request), now)) {
+    if (rateLimit.limited) {
       return NextResponse.json(
         { error: "TOO_MANY_REQUESTS" },
         {
           status: 429,
-          headers: { "Retry-After": String(RATE_LIMIT_WINDOW_MS / 1000) },
+          headers: { "Retry-After": String(rateLimit.retryAfter) },
         }
       );
     }

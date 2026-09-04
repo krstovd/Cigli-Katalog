@@ -39,6 +39,8 @@ test("rejects honeypot spam and submissions completed too quickly", () => {
 test("rejects invalid email, topic and short messages", () => {
   assert.equal(parseContactPayload({ ...validPayload(), email: "invalid" }, now), null);
   assert.equal(parseContactPayload({ ...validPayload(), topic: "unknown" }, now), null);
+  assert.equal(parseContactPayload({ ...validPayload(), topic: "constructor" }, now), null);
+  assert.equal(parseContactPayload({ ...validPayload(), topic: "__proto__" }, now), null);
   assert.equal(parseContactPayload({ ...validPayload(), message: "short" }, now), null);
 });
 
