@@ -129,6 +129,8 @@ export default function Gallery({ images }: GalleryProps) {
       <AnimatePresence>
         {selected && (
           <ImageModal
+            previousSrc={localizedImagePath(images[(images.indexOf(selected) - 1 + images.length) % images.length], lang)}
+            nextSrc={localizedImagePath(images[(images.indexOf(selected) + 1) % images.length], lang)}
             src={localizedImagePath(selected, lang)}
             alt={altFromPath(selected)}
             onClose={onClose}

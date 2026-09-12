@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import ZoomableImage, { previewImageSizes } from "./ZoomableImage";
 import { useLang } from "@/app/context/LangContext";
 
 type ImageModalProps = {
@@ -12,6 +13,8 @@ type ImageModalProps = {
   onNext: () => void;
   currentPosition: number;
   total: number;
+  previousSrc?: string;
+  nextSrc?: string;
 };
 
 export default function ImageModal({
@@ -22,33 +25,12 @@ export default function ImageModal({
   onNext,
   currentPosition,
   total,
+  previousSrc,
+  nextSrc,
 }: ImageModalProps) {
   const { lang } = useLang();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const touchStartXRef = useRef<number | null>(null);
-
-  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (event.touches.length === 1) {
-      touchStartXRef.current = event.touches[0].clientX;
-    }
-  };
-
-  const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
-    const startX = touchStartXRef.current;
-    touchStartXRef.current = null;
-    if (startX === null || event.changedTouches.length !== 1) return;
-
-    const distance = startX - event.changedTouches[0].clientX;
-    if (Math.abs(distance) < 55) return;
-
-    if (distance > 0) {
-      onNext();
-    } else {
-      onPrevious();
-    }
-  };
-
   useEffect(() => {
     const previouslyFocused = document.activeElement;
     const previousOverflow = document.body.style.overflow;
@@ -68,7 +50,7 @@ export default function ImageModal({
 
       if (event.key === "Tab") {
         const focusableElements = Array.from(
-          dialogRef.current?.querySelectorAll<HTMLButtonElement>("button") ?? []
+          dialogRef.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled)") ?? []
         );
         if (focusableElements.length === 0) return;
 
@@ -113,23 +95,18 @@ export default function ImageModal({
       />
 
       {/* Image container */}
+      {/* Match the visible image's responsive request to warm the browser cache. */}
+      <div className="hidden" aria-hidden="true">
+        {Array.from(new Set([previousSrc, nextSrc])).filter((neighbor): neighbor is string => Boolean(neighbor) && neighbor !== src).map((neighbor) => (
+          <Image key={neighbor} src={neighbor} alt="" width={1200} height={900}
+            sizes={previewImageSizes} loading="eager" fetchPriority="low" />
+        ))}
+      </div>
       <div
-        className="relative z-10 max-h-[90vh] max-w-[90vw] touch-pan-y select-none"
+        className="relative z-10 max-h-[95dvh] max-w-[90vw] select-none"
         onClick={(e) => e.stopPropagation()}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={() => {
-          touchStartXRef.current = null;
-        }}
       >
-        <Image
-          src={src}
-          alt={alt}
-          width={1200}
-          height={900}
-          sizes="90vw"
-          className="max-h-[90vh] w-auto rounded-xl object-contain shadow-2xl"
-        />
+        <ZoomableImage key={src} src={src} alt={alt} onPrevious={onPrevious} onNext={onNext} />
 
         {/* Image name label */}
         <div className="mt-4 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.28em] text-white/40">
@@ -142,13 +119,13 @@ export default function ImageModal({
         <p className="mt-2 text-center text-[9px] tracking-[0.12em] text-white/25">
           <span className="sm:hidden">
             {lang === "mk"
-              ? "Повлечете лево или десно"
-              : "Swipe left or right"}
+              ? "Зумирајте со два прста • Повлечете за следен модел"
+              : "Pinch to zoom • Swipe to change model"}
           </span>
           <span className="hidden sm:inline">
             {lang === "mk"
-              ? "Користете ги стрелките ← →"
-              : "Use the arrow keys ← →"}
+              ? "Зумирајте со два прста • Стрелки ← →"
+              : "Pinch to zoom • Arrow keys ← →"}
           </span>
         </p>
       </div>

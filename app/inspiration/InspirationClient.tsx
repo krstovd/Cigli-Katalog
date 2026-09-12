@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Footer from "@/app/components/Footer";
 import ImageModal from "@/app/components/ImageModal";
+import { scrollToElement } from "@/lib/lenis-instance";
 import { useLang, type Lang } from "@/app/context/LangContext";
 
 type IconName="all"|"living"|"kitchen"|"restaurant"|"cafe"|"bedroom"|"fireplace"|"bathroom"|"facade";
@@ -95,6 +96,7 @@ function Icon({name}:{name:IconName}){
 
 export default function InspirationClient(){
   const {lang}=useLang();
+  const filtersRef=useRef<HTMLDivElement>(null);
   const [category,setCategory]=useState<IconName>("all");
   const [selected,setSelected]=useState<string|null>(null);
   const visible=useMemo(()=>category==="all"?spaces.map(space=>({space,image:space.images[0]})):spaces.filter(x=>x.id===category).flatMap(space=>space.images.map(image=>({space,image}))),[category]);
@@ -108,14 +110,30 @@ export default function InspirationClient(){
     const index=current?visible.findIndex(({image})=>image.file===current):-1;
     return visible[(index+1)%visible.length]?.image.file??null;
   }),[visible]);
-  const selectCategory=(nextCategory:IconName)=>{setCategory(nextCategory);setSelected(null);};
+  const selectCategory=(nextCategory:IconName)=>{
+    setCategory(nextCategory);
+    setSelected(null);
+    requestAnimationFrame(()=>{
+      scrollToElement("#inspiration-categories");
+      const filters=filtersRef.current;
+      const button=filters?.querySelector<HTMLButtonElement>(`[data-category="${nextCategory}"]`);
+      if(!filters||!button||filters.scrollWidth<=filters.clientWidth) return;
+      const containerRect=filters.getBoundingClientRect();
+      const buttonRect=button.getBoundingClientRect();
+      filters.scrollTo({
+        left:filters.scrollLeft+buttonRect.left-containerRect.left-(filters.clientWidth-buttonRect.width)/2,
+        behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth",
+      });
+    });
+  };
+  const openCard=(space:Space,image:SpaceImage)=>{if(category==="all"){selectCategory(space.id);}else{setSelected(image.file);}};
   return <main className="inspo-v2">
     <section className="inspo-v2-hero"><Image src="/images/inspiration/final-rooms/fireplace-notte-final.webp" alt="" fill priority sizes="100vw"/><div className="inspo-v2-overlay"/><div className="inspo-v2-hero-copy"><p>{lang==="mk"?"ИНСПИРАЦИЈА":"INSPIRATION"}</p><h1>{lang==="mk"?<>Инспирираме<br/>ваши простори</>:<>We inspire<br/>your spaces</>}</h1><span>{lang==="mk"?"Погледнете како нашите декоративни гипсени цигли го трансформираат секој простор во нешто посебно.":"See how our decorative gypsum bricks transform every space into something special."}</span></div></section>
-    <section className="inspo-v2-shell">
-      <div className="inspo-v2-filters" role="group" aria-label={lang==="mk"?"Категории":"Categories"}><button className={category==="all"?"active":""} onClick={()=>selectCategory("all")}><Icon name="all"/>{lang==="mk"?"СИТЕ ПРОСТОРИ":"ALL SPACES"}</button>{spaces.map(space=><button className={category===space.id?"active":""} onClick={()=>selectCategory(space.id)} key={space.id}><Icon name={space.id}/>{space.title[lang]}</button>)}</div>
-      <div className={`inspo-v2-grid${category!=="all"?" selected":""}`}>{visible.map(({space,image},index)=><article key={`${space.id}-${image.file}`} role="button" tabIndex={0} aria-label={`${lang==="mk"?"Отвори слика":"Open image"}: ${space.title[lang]} ${image.model}`} onClick={()=>setSelected(image.file)} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();setSelected(image.file);}}}><Image src={`/images/inspiration/final-rooms/${image.file}`} alt={`${space.title[lang]} — ${image.model}`} fill sizes="(max-width:700px) 100vw, 25vw"/><div className="inspo-card-shade"/><div className="inspo-card-copy"><b>{space.title[lang]}</b><small>{lang==="mk"?"Модел":"Model"} {image.model} · {String(index+1).padStart(2,"0")}</small></div><span className="inspo-card-arrow" aria-hidden="true">→</span></article>)}</div>
+    <section id="inspiration-categories" className="inspo-v2-shell" style={{scrollMarginTop:80}}>
+      <div ref={filtersRef} className="inspo-v2-filters" role="group" aria-label={lang==="mk"?"Категории":"Categories"}><button data-category="all" aria-pressed={category==="all"} className={category==="all"?"active":""} onClick={()=>selectCategory("all")}><Icon name="all"/>{lang==="mk"?"СИТЕ ПРОСТОРИ":"ALL SPACES"}</button>{spaces.map(space=><button data-category={space.id} aria-pressed={category===space.id} className={category===space.id?"active":""} onClick={()=>selectCategory(space.id)} key={space.id}><Icon name={space.id}/>{space.title[lang]}</button>)}</div>
+      <div className={`inspo-v2-grid${category!=="all"?" selected":""}`}>{visible.map(({space,image},index)=><article key={`${space.id}-${image.file}`} role="button" tabIndex={0} aria-label={category==="all"?`${lang==="mk"?"Отвори категорија":"Open category"}: ${space.title[lang]}`:`${lang==="mk"?"Отвори слика":"Open image"}: ${space.title[lang]} ${image.model}`} onClick={()=>openCard(space,image)} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();openCard(space,image);}}}><Image src={`/images/inspiration/final-rooms/${image.file}`} alt={`${space.title[lang]} — ${image.model}`} fill sizes="(max-width:700px) 100vw, 25vw"/><div className="inspo-card-shade"/><div className="inspo-card-copy"><b>{space.title[lang]}</b><small>{lang==="mk"?"Модел":"Model"} {image.model} · {String(index+1).padStart(2,"0")}</small></div><span className="inspo-card-arrow" aria-hidden="true">→</span></article>)}</div>
       <aside className="inspo-v2-cta"><div className="inspo-v2-cta-icon"><Icon name="all"/></div><div><h2>{lang==="mk"?"Имате проект?":"Have a project?"}</h2><p>{lang==="mk"?"Испратете ни фотографија и ние ќе ви помогнеме да го изберете најдобриот модел.":"Send us a photo and we'll help you choose the best model."}</p></div><Link href="/contact" className="gold-button">{lang==="mk"?"КОНТАКТИРАЈТЕ НÈ":"CONTACT US"}<span>→</span></Link></aside>
     </section><Footer/>
-    {selected&&selectedIndex>=0&&<ImageModal src={`/images/inspiration/final-rooms/${selected}`} alt={`${visible[selectedIndex].space.title[lang]} — ${visible[selectedIndex].image.model}`} onClose={closePreview} onPrevious={previousPreview} onNext={nextPreview} currentPosition={selectedIndex+1} total={visible.length}/>} 
+    {selected&&selectedIndex>=0&&<ImageModal previousSrc={`/images/inspiration/final-rooms/${visible[(selectedIndex-1+visible.length)%visible.length].image.file}`} nextSrc={`/images/inspiration/final-rooms/${visible[(selectedIndex+1)%visible.length].image.file}`} src={`/images/inspiration/final-rooms/${selected}`} alt={`${visible[selectedIndex].space.title[lang]} — ${visible[selectedIndex].image.model}`} onClose={closePreview} onPrevious={previousPreview} onNext={nextPreview} currentPosition={selectedIndex+1} total={visible.length}/>}
   </main>;
 }
