@@ -160,7 +160,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="mk">
+    <html lang="mk" data-scroll-behavior="smooth">
       <body
         className={`${geistSans.variable} min-h-screen overflow-x-hidden antialiased`}
       >

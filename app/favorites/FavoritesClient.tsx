@@ -41,6 +41,6 @@ export default function FavoritesClient({ images }: { images: string[] }) {
       </div> : <div className="favorites-empty"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg><h2>{lang === "mk" ? "Сè уште немате омилени модели" : "You do not have favorite models yet"}</h2><Link href="/catalog" className="gold-button">{lang === "mk" ? "РАЗГЛЕДАЈ КАТАЛОГ" : "VIEW CATALOG"}</Link></div>}
     </div>
     <Footer />
-    {selected && selectedIndex >= 0 && <ImageModal src={lang === "en" ? `/images/en/${imageName(selected)}.webp` : selected} alt={imageName(selected)} onClose={closePreview} onPrevious={previousPreview} onNext={nextPreview} currentPosition={selectedIndex + 1} total={savedImages.length}/>} 
+    {selected && selectedIndex >= 0 && <ImageModal previousSrc={lang === "en" ? `/images/en/${imageName(savedImages[(selectedIndex - 1 + savedImages.length) % savedImages.length])}.webp` : savedImages[(selectedIndex - 1 + savedImages.length) % savedImages.length]} nextSrc={lang === "en" ? `/images/en/${imageName(savedImages[(selectedIndex + 1) % savedImages.length])}.webp` : savedImages[(selectedIndex + 1) % savedImages.length]} src={lang === "en" ? `/images/en/${imageName(selected)}.webp` : selected} alt={imageName(selected)} onClose={closePreview} onPrevious={previousPreview} onNext={nextPreview} currentPosition={selectedIndex + 1} total={savedImages.length}/>}
   </main>;
 }
